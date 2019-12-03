@@ -1,15 +1,19 @@
 <template>
     <div class="testContent">
+        <div class="postInputDiv">
+            <PostInput />
+        </div>
         <PostCard v-for="post in posts" v-bind:key=post.autor v-bind:post="post" />
     </div>
 </template>
 
 <script>
 import PostCard from '@/components/PostCard'
-
+import PostInput from '@/components/PostInput'
 export default {
     components: {
-        PostCard
+        PostCard,
+        PostInput
     },
     data() {
         return {
@@ -40,5 +44,8 @@ export default {
     flex-direction: column;
     align-items: center;
     width: 100vw;
+}
+.postInputDiv{
+    height: 80px !important;
 }
 </style>
