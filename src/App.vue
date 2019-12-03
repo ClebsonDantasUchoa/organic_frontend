@@ -13,7 +13,6 @@
   color: #2c3e50;
   height: 100vh;
   min-height: 500px;
-  background: red
 }
 
 </style>

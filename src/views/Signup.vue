@@ -2,6 +2,7 @@
   <div class="content">
     <div class="logo">
       <header>Organic</header>
+      <h5>Crie sua conta</h5>
     </div>
     <div class="form">
 
@@ -16,28 +17,44 @@
 
       <div class="field">
         <p class="control has-icons-left">
-          <input class="input border-input" type="password" placeholder="Senha" />
+          <input id="password" class="input border-input password" type="password" placeholder="Senha" />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
         </p>
       </div>
-      <input class="input is-rounded submit" type="submit" value="Login" />
-      <p>ou</p>
-      <router-link to="/signup">
-        <input class="input is-rounded submit" type="submit" value="Crie sua conta" />
-      </router-link>
+
+      <div class="field">
+        <p class="control has-icons-left">
+          <input id="passwordConfirmation" class="input border-input password-confirmation" type="password" placeholder="Confirmar senha" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+
+      <input class="input is-rounded submit" v-on:click="confirmPassword()" type="submit" value="Registrar-se" />
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+    methods: {
+        confirmPassword() {
+            let password = document.getElementById("password").value
+            let passwordConfirmation = document.getElementById("passwordConfirmation").value
+            if(password !== passwordConfirmation){
+                alert("As senhas precisam ser iguais")    
+            }
+        }
+    }
+};
 </script>
 
 <style>
-p{
-  margin-top: 15px
+h5{
+    margin-top: 20px
 }
 header{
   font-size: 25px
