@@ -11,12 +11,13 @@
         class="input is-success"
         type="text-area"
         :placeholder="placeholder"
+        v-model="text"
         rows="5"
         cols="25"
       ></textarea>
 
       <div class="post-input__submit">
-        <div class="icon">
+        <div class="icon" @click="submit">
           <i class="fas fa-paper-plane"></i>
         </div>
       </div>
@@ -30,6 +31,20 @@ export default {
     placeholder: {
       type: String,
       default: "Escreva algo"
+    }
+  },
+
+  data() {
+    return {
+      text: ""
+    };
+  },
+
+  methods: {
+    submit() {
+      if (!this.text) return;
+      this.$emit("submit", this.text);
+      this.text = "";
     }
   }
 };

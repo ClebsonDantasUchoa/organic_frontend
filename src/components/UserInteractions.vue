@@ -3,13 +3,15 @@
     <div class="user-interactions__buttons">
       <div class="icon">
         <i class="fab fa-gratipay"></i>
-      </div>10
+      </div>
+      {{likes}}
       <div class="icon">
         <i class="far fa-comment"></i>
-      </div>20
+      </div>
+      {{comments.total}}
     </div>
 
-    <div class="user-interactions__comments">
+    <div class="user-interactions__comments" v-if="comments.available.length">
       <div class="user-interactions__comments__content">
         <div class="user-interactions__comments__avatar">
           <figure class="image is-48x48">
@@ -18,21 +20,22 @@
         </div>
 
         <div class="user-interactions__comments__texts">
-          <p>Josué</p>
-          <p>Texto do Fulano</p>
-          <p class="is-size-7">2 horas</p>
+          <p>{{comments.available[0].author.name}}</p>
+          <p>{{comments.available[0].text}}</p>
+          <p class="is-size-7">{{new Date(comments.available[0].event_date).toUTCString()}}</p>
         </div>
       </div>
 
       <div class="user-interactions__comments__likes">
         <div class="icon">
           <i class="fab fa-gratipay"></i>
-        </div>410
+        </div>
+        {{comments.available[0].likes}}
       </div>
     </div>
 
     <div class="user-interactions__post-input">
-      <PostInput placeholder="Escreva um comentário..." />
+      <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
     </div>
   </div>
 </template>
@@ -42,6 +45,36 @@ import PostInput from "@/components/PostInput";
 export default {
   components: {
     PostInput
+  },
+
+  props: {
+    post_id: {
+      type: String,
+      required: true
+    },
+    likes: {
+      type: Number,
+      required: true
+    },
+    comments: {
+      type: Object,
+      required: true
+    }
+  },
+
+  methods: {
+    publishComment(text) {
+      let comment = {
+        _id: "12",
+        post_id: this.post_id,
+        author: { name: "Michael Grubs" },
+        text: text,
+        event_date: new Date(),
+        likes: 0
+      };
+
+      this.$store.dispatch("timeline/publishComment", comment);
+    }
   }
 };
 </script>
@@ -49,11 +82,13 @@ export default {
 <style lang="sass" scoped>
 .user-interactions
   &__buttons
+    padding: 10px 0
     .icon
       cursor: pointer
 
   &__comments
-    padding: 15px 0
+    // padding: 15px 0
+    margin-bottom: 15px
     display: flex
     // background-color: red
     flex-direction: row

@@ -1,11 +1,11 @@
 <template>
   <div class="feed">
     <div class="feed__header">
-      <PostInput />
+      <PostInput @submit="publishContent" />
     </div>
 
     <div class="feed__content">
-      <PostCard v-for="(post, key) in posts" :post="post" :key="key" />
+      <PostCard v-for="(post, key) in posts " :post="post" :key="key" />
     </div>
   </div>
 </template>
@@ -13,6 +13,7 @@
 <script>
 import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -22,69 +23,48 @@ export default {
 
   data() {
     return {
-      posts: [
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Jucelino",
-          postImage: require("../assets/1.jpg"),
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: require("../assets/2.jpg"),
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: require("../assets/3.jpg"),
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        },
-        {
-          autorImage: "https://thispersondoesnotexist.com/image",
-          autor: "Bla",
-          postImage: "",
-          message: "HAUAHUHUAHHAUHUAUAUHAH"
-        }
-      ]
+      // postList: []
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      posts: "timeline/getPosts"
+    })
+  },
+
+  // watch: {
+  //   posts: {
+  //     handler: function() {
+  //       console.log("posts");
+  //       // this.postList = [];
+  //       this.postList = this.posts
+  //     },
+  //     deep: true
+  //   }
+  // },
+
+  methods: {
+    publishContent(content) {
+      let post = {
+        autorImage: "https://thispersondoesnotexist.com/image",
+        autor: "Bla",
+        postImage: "",
+        message: content,
+        event_date: "2019-10-09T09:10:02.000Z",
+        likes: 0,
+        comments: {
+          total: 0,
+          available: []
+        }
+      };
+
+      this.$store.dispatch("timeline/publishContent", post);
+    }
+  },
+
+  mounted() {
+    // this.postList = this.posts;
   }
 };
 </script>

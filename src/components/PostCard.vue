@@ -7,7 +7,7 @@
 
       <div>
         <p>{{post.autor}}</p>
-        <p>1h</p>
+        <p class="is-size-7">{{new Date(post.event_date).toUTCString()}}</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions />
+      <UserInteractions :post_id="post._id" :likes="post.likes" :comments="post.comments" />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
