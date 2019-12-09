@@ -4,11 +4,30 @@
       <header>Organic</header>
       <h5>Crie sua conta</h5>
     </div>
-    <div class="form">
+    <form class="form" action="#" @submit.prevent="submit">
+      <div  class="alert alert-danger"></div>
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input 
+            class="input border-input" 
+            type="text" 
+            placeholder="Nome"
+            v-model="form.name"
+          />
+          <span class="icon is-small is-left">
+            <i class="fas fa-user"></i>
+          </span>
+        </p>
+      </div>
 
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input class="input border-input" type="email" placeholder="Email" />
+          <input
+            class="input border-input"
+            type="email"
+            placeholder="Email"
+            v-model="form.email"
+          />
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
@@ -26,7 +45,13 @@
 
       <div class="field">
         <p class="control has-icons-left">
-          <input id="passwordConfirmation" class="input border-input password-confirmation" type="password" placeholder="Confirmar senha" />
+          <input
+            id="passwordConfirmation" 
+            class="input border-input password-confirmation" 
+            type="password" 
+            placeholder="Confirmar senha"
+            v-model="form.password"
+          />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
@@ -34,21 +59,51 @@
       </div>
 
       <input class="input is-rounded submit" v-on:click="confirmPassword()" type="submit" value="Registrar-se" />
-    </div>
+      <article class="message is-danger">
+        <div v-if="error" class="message-body">{{error}}</div>
+      </article>
+    </form>
   </div>
 </template>
 
 <script>
+
+import firebase from "firebase";
+
 export default {
-    methods: {
-        confirmPassword() {
-            let password = document.getElementById("password").value
-            let passwordConfirmation = document.getElementById("passwordConfirmation").value
-            if(password !== passwordConfirmation){
-                alert("As senhas precisam ser iguais")    
-            }
-        }
+  data() {
+    return {
+      form: {
+        name: "",
+        email: "",
+        password: ""
+      },
+      error: null
+    };
+  },
+  methods: {
+      confirmPassword() {
+          let password = document.getElementById("password").value
+          let passwordConfirmation = document.getElementById("passwordConfirmation").value
+          if(password !== passwordConfirmation){
+              this.error = "As senhas precisam ser iguais"    
+          }
+          else{
+            this.error = null
+          }
+      },
+      submit() {
+        if(this.error) return
+        firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password).then(data => {
+          data.user.updateProfile({
+              name: this.form.name
+          }).then(() => {});
+        })
+        .catch(err => {
+          this.error = err.message;
+        });
     }
+  }
 };
 </script>
 
@@ -85,5 +140,8 @@ header{
 }
 .border-input:focus{
     border-color: rgb(23, 201, 100)
+}
+.message{
+  margin-top: 15px
 }
 </style>
