@@ -66,11 +66,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const userAuth = localStorage.getItem("uemail");
-  console.log('User Auth', userAuth)
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  
-  console.log(!requiresAuth && userAuth)
-
   if (requiresAuth && !userAuth) next("/login")
 	else if (!requiresAuth && userAuth) next("/")
 	else next()
