@@ -1,6 +1,7 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -9,6 +10,9 @@ const routes = [
     redirect: "/feed",
     name: "default-layout",
     component: () => import("../layouts/LayoutDefault"),
+    meta: {
+      requiresAuth: true
+    },
     children: [
       {
         path: "/feed",
@@ -58,6 +62,18 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const userAuth = localStorage.getItem("uemail");
+  console.log('User Auth', userAuth)
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  
+  console.log(!requiresAuth && userAuth)
+
+  if (requiresAuth && !userAuth) next("/login")
+	else if (!requiresAuth && userAuth) next("/")
+	else next()
 })
 
 export default router

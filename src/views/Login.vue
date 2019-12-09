@@ -62,8 +62,9 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
-        .then(() => {
-          this.$router.replace({ name: "test" });
+        .then(response => {
+          localStorage.setItem("uemail", response.user.email)
+          this.$router.replace({ name: "feed" });
         })
         .catch(err => {
           this.error = err.message;

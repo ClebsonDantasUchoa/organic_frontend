@@ -96,8 +96,11 @@ export default {
         if(this.error) return
         firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password).then(data => {
           data.user.updateProfile({
-              name: this.form.name
-          }).then(() => {});
+              displayName: this.form.name
+          }).then(() => {
+            localStorage.setItem("uemail", data.user.email)
+            this.$router.push("/feed");
+          });
         })
         .catch(err => {
           this.error = err.message;
