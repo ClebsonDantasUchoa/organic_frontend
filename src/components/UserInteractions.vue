@@ -1,5 +1,24 @@
 <template>
   <div class="user-interactions">
+    <Modal @close="closeCommentModal" :isActive="modalComment">
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <div class="tile is-child" v-if="post_image">
+            <img :src="post_image" class="post-img" />
+          </div>
+        </div>
+        <div class="tile is-parent">
+          <div class="tile is-child">
+            <div v-for="(comment, key) in comments.available" :key="key">
+              <Comment :comment="comment"></Comment>
+            </div>
+            <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
+          </div>
+        </div>
+      </div>
+      
+    </Modal>
+
     <div class="user-interactions__buttons">
       <div class="icon">
         <i class="fab fa-gratipay"></i>
@@ -10,40 +29,30 @@
       </div>
       {{comments.total}}
     </div>
-
-    <div class="user-interactions__comments" v-if="comments.available.length">
-      <div class="user-interactions__comments__content">
-        <div class="user-interactions__comments__avatar">
-          <figure class="image is-48x48">
-            <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
-          </figure>
-        </div>
-
-        <div class="user-interactions__comments__texts">
-          <p>{{comments.available[0].author.name}}</p>
-          <p>{{comments.available[0].text}}</p>
-          <p class="is-size-7">{{new Date(comments.available[0].event_date).toUTCString()}}</p>
-        </div>
-      </div>
-
-      <div class="user-interactions__comments__likes">
-        <div class="icon">
-          <i class="fab fa-gratipay"></i>
-        </div>
-        {{comments.available[0].likes}}
-      </div>
+    
+    <div v-if="comments.available.length">
+      <Comment :comment="comments.available[0]"></Comment>
     </div>
 
     <div class="user-interactions__post-input">
-      <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
+      <PostInput
+        placeholder="Escreva um comentário..."
+        @submit="publishComment"
+        @textAreaFocus="openCommentModal"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import PostInput from "@/components/PostInput";
+import Modal from "@/components/Modal";
+import Comment from "@/components/Comment";
+
 export default {
   components: {
+    Comment,
+    Modal,
     PostInput
   },
 
@@ -59,9 +68,18 @@ export default {
     comments: {
       type: Object,
       required: true
+    },
+    post_image: {
+      type: String,
+      default: ""
     }
   },
-
+  data() {
+    return {
+      modalComment: false,
+      
+    };
+  },
   methods: {
     publishComment(text) {
       let comment = {
@@ -74,37 +92,31 @@ export default {
       };
 
       this.$store.dispatch("timeline/publishComment", comment);
+    },
+
+    openCommentModal() {
+      this.modalComment = true;
+    },
+
+    closeCommentModal() {
+      this.modalComment = false;
     }
   }
 };
 </script>
 
 <style lang="sass" scoped>
+@import "../assets/css/mixins"
+
 .user-interactions
+  .post-img
+    border-radius: 5px
+
   &__buttons
     padding: 10px 0
     .icon
       cursor: pointer
 
-  &__comments
-    // padding: 15px 0
-    margin-bottom: 15px
-    display: flex
-    // background-color: red
-    flex-direction: row
-    justify-content: space-between
-    align-items: center
-
-    &__content
-      display: flex
-      flex-direction: row
-      align-items: center
-
-    &__avatar
-    &__texts
-      line-height: 1.2
-      margin-left: 5px
-    &__likes
   &__post-input
     .post-input
       box-shadow: none

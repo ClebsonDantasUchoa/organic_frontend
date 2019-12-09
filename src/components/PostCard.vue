@@ -6,8 +6,8 @@
       </figure>
 
       <div>
-        <p>{{post.autor}}</p>
-        <p class="is-size-7">{{new Date(post.event_date).toUTCString()}}</p>
+        <p class="postAuthor">{{post.autor}}</p>
+        <p class="is-size-7 postDate">{{convertDateInTimeAgo(new Date(post.event_date))}}</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions :post_id="post._id" :likes="post.likes" :comments="post.comments" />
+      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes" :comments="post.comments" />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
@@ -44,6 +44,8 @@
 
 <script>
 import UserInteractions from "@/components/UserInteractions";
+import TimeAgo from 'javascript-time-ago'
+import pt from 'javascript-time-ago/locale/pt'
 
 export default {
   components: {
@@ -62,6 +64,13 @@ export default {
   methods: {
     setModalVisibilty() {
       this.showModal = !this.showModal;
+    },
+
+    convertDateInTimeAgo(date){
+      TimeAgo.addLocale(pt);
+      const timeAgo = new TimeAgo('pt-BR')
+
+      return timeAgo.format(date)
     }
   }
 };
@@ -101,9 +110,12 @@ export default {
   //   text-align: justify
   //   text-indent: 20px
 
-  &__author p
-    margin-left: 10px
-    color: black
+  &__author 
+    p
+      margin-left: 10px
+      color: black
+    .postAuthor
+      color: $greenish-gray
 
   &__content
     padding: 15px 0px
