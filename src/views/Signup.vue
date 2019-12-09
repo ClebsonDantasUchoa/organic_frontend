@@ -4,20 +4,48 @@
       <header>Organic</header>
       <h5>Crie sua conta</h5>
     </div>
-    <div class="form">
+    <form class="form" action="#" @submit.prevent="submit">
+      <div  class="alert alert-danger"></div>
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input 
+            class="input border-input" 
+            type="text" 
+            placeholder="Nome"
+            v-model="form.name"
+          />
+          <span class="icon is-small is-left">
+            <i class="fas fa-user"></i>
+          </span>
+        </p>
+      </div>
 
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input class="input border-input" type="email" placeholder="Email" />
+          <input
+            class="input border-input"
+            type="email"
+            placeholder="Email"
+            v-model="form.email"
+          />
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
           </span>
         </p>
       </div>
 
+      <textarea
+        class="input is-success description"
+        type="text-area"
+        placeholder="Fale um pouco sobre você"
+        v-model="form.description"
+        rows="5"
+        cols="25"
+      ></textarea>
+
       <div class="field">
         <p class="control has-icons-left">
-          <input id="password" class="input border-input password" type="password" placeholder="Senha" />
+          <input id="password" class="input border-input" type="password" v-model="confirmPass" placeholder="Senha" />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
@@ -26,29 +54,94 @@
 
       <div class="field">
         <p class="control has-icons-left">
-          <input id="passwordConfirmation" class="input border-input password-confirmation" type="password" placeholder="Confirmar senha" />
+          <input
+            id="passwordConfirmation" 
+            class="input border-input password-confirmation" 
+            type="password" 
+            placeholder="Confirmar senha"
+            v-model="form.password"
+          />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
           </span>
         </p>
       </div>
 
-      <input class="input is-rounded submit" v-on:click="confirmPassword()" type="submit" value="Registrar-se" />
-    </div>
+      <div class="button is-success is-rounded" :class="{'is-loading': loading}" @click="submit">Registrar-se</div>      
+      <article class="message is-danger">
+        <div v-if="error" class="message-body">{{error}}</div>
+      </article>
+    </form>
   </div>
 </template>
 
 <script>
+
+import firebase from "firebase";
+let db = firebase.firestore()
+
 export default {
-    methods: {
-        confirmPassword() {
-            let password = document.getElementById("password").value
-            let passwordConfirmation = document.getElementById("passwordConfirmation").value
-            if(password !== passwordConfirmation){
-                alert("As senhas precisam ser iguais")    
-            }
-        }
+  data() {
+    return {
+      loading: false,
+      form: {
+        name: "",
+        email: "",
+        password: "",
+        description: ""
+      },
+      confirmPass: "",
+      error: null
+    };
+  },
+
+  watch: {
+    "form.password"() {
+      if (this.form.password !== this.confirmPass)
+        this.error = "As senhas precisam ser iguais!"
+      else
+        this.error = ""
     }
+  },
+
+  methods: {
+      async submit() {
+        this.loading = true
+        if(this.error) return
+        try {
+          await firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password).then(data => {
+            data.user.updateProfile({
+                displayName: this.form.name
+            })
+          })
+          await this.saveUserData()
+          localStorage.setItem("uemail", this.form.email)
+          this.$router.push("/feed");
+        } catch (error) {
+          this.error = error.message;
+        }
+        this.loading = false
+      },
+      async saveUserData(){
+        await db.collection("users").add({
+          created: new Date(),
+          description: this.form.description,
+          email: this.form.email,
+          followers: 0,
+          following: 0,
+          name: this.form.name
+        })
+        .then(function(docRef) {
+          db.collection("users").doc(docRef.id).update({
+            _id: docRef.id
+          })
+          console.log("User created with ID: ", docRef.id);
+        })
+        .catch(function(error) {
+          console.error("Error adding User: ", error);
+        });
+      }
+  }
 };
 </script>
 
@@ -85,5 +178,15 @@ header{
 }
 .border-input:focus{
     border-color: rgb(23, 201, 100)
+}
+.message{
+  margin-top: 15px
+}
+.description{
+  resize: none;
+  height: 90px;
+  min-height: 40px;
+  max-height: 100px;
+  margin-bottom: 10px
 }
 </style>

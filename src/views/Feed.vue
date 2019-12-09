@@ -29,7 +29,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      posts: "timeline/getPosts"
+      posts: "timeline/getPosts",
+      user: "user/getUser"
     })
   },
 
