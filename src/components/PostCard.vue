@@ -7,7 +7,7 @@
 
       <div>
         <p class="postAuthor">{{post.autor}}</p>
-        <p class="is-size-7 postDate">{{new Date(post.event_date).toUTCString()}}</p>
+        <p class="is-size-7 postDate">{{convertDateInTimeAgo(new Date(post.event_date))}}</p>
       </div>
     </div>
 
@@ -44,6 +44,8 @@
 
 <script>
 import UserInteractions from "@/components/UserInteractions";
+import TimeAgo from 'javascript-time-ago'
+import pt from 'javascript-time-ago/locale/pt'
 
 export default {
   components: {
@@ -62,6 +64,13 @@ export default {
   methods: {
     setModalVisibilty() {
       this.showModal = !this.showModal;
+    },
+
+    convertDateInTimeAgo(date){
+      TimeAgo.addLocale(pt);
+      const timeAgo = new TimeAgo('pt-BR')
+
+      return timeAgo.format(date)
     }
   }
 };

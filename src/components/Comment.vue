@@ -11,7 +11,7 @@
         <p class="commentAuthor">{{comment.author.name}}</p>
         <p>{{comment.text}}</p>
         <!-- <p class="is-size-7">{{new Date(comment.event_date).toUTCString()}}</p> -->
-        <p class="is-size-7">{{new Date(comment.event_date).toUTCString()}}</p>
+        <p class="is-size-7">{{convertDateInTimeAgo(new Date(comment.event_date))}}</p>
       </div>
     </div>
 
@@ -25,14 +25,25 @@
 </template>
 
 <script>
+import TimeAgo from 'javascript-time-ago'
+import pt from 'javascript-time-ago/locale/pt'
+
 export default {
+
     props: {
         comment: {
             type: Object,
             required: true
         }
     },
+    methods: {
+        convertDateInTimeAgo(date){
+        TimeAgo.addLocale(pt);
+        const timeAgo = new TimeAgo('pt-BR')
 
+        return timeAgo.format(date)
+        }
+    },
     data() {
         return {
 
