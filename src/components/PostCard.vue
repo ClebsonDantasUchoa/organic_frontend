@@ -6,8 +6,8 @@
       </figure>
 
       <div>
-        <p>{{post.autor}}</p>
-        <p class="is-size-7">{{new Date(post.event_date).toUTCString()}}</p>
+        <p class="postAuthor">{{post.autor}}</p>
+        <p class="is-size-7 postDate">{{new Date(post.event_date).toUTCString()}}</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions :post_id="post._id" :likes="post.likes" :comments="post.comments" />
+      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes" :comments="post.comments" />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
@@ -101,9 +101,12 @@ export default {
   //   text-align: justify
   //   text-indent: 20px
 
-  &__author p
-    margin-left: 10px
-    color: black
+  &__author 
+    p
+      margin-left: 10px
+      color: black
+    .postAuthor
+      color: $greenish-gray
 
   &__content
     padding: 15px 0px

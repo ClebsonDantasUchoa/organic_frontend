@@ -8,6 +8,8 @@
       </div>
 
       <textarea
+        @keydown.enter="submit"
+        @click="textAreaFocus"
         class="input is-success"
         type="text-area"
         :placeholder="placeholder"
@@ -45,6 +47,9 @@ export default {
       if (!this.text) return;
       this.$emit("submit", this.text);
       this.text = "";
+    },
+    textAreaFocus(){
+      this.$emit("textAreaFocus");
     }
   }
 };
