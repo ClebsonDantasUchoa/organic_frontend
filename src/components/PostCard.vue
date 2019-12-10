@@ -84,15 +84,6 @@ export default {
 //   display: flex
 
 .post-card
-  // width: 30px
-  // margin: 15px 0px
-  // display: flex
-  // flex-direction: column
-  // border-width: 1px
-  // border-color: rgb(23, 201, 100)
-  // border-radius: 7px
-  // border-style: solid
-  // max-width: 340px
   min-width: 100%
   padding: 10px 20px
   box-shadow: 0px 0px 5px rgba(0, 0, 0, .2)
@@ -110,7 +101,7 @@ export default {
   //   text-align: justify
   //   text-indent: 20px
 
-  &__author 
+  &__author
     p
       margin-left: 10px
       color: black

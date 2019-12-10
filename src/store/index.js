@@ -1,17 +1,29 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import config from "../config/firebase.config"
+import * as firebase from "firebase"
+
+firebase.initializeApp(config)
 
 import timeline from "@/store/modules/timeline"
-import user from '@/store/modules/user';
+import user from "@/store/modules/user"
+import search from "@/store/modules/search"
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {},
   mutations: {},
   actions: {},
   modules: {
     timeline,
-    user
+    user,
+    search
   }
 })
+
+firebase.auth().onAuthStateChanged(user => {
+  store.dispatch("user/fetchUser", user)
+})
+
+export default store
