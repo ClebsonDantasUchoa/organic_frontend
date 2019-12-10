@@ -6,7 +6,9 @@
       </div>
 
       <div class="layout-default__content tile is-parent">
-        <div class="layout-default__left tile is-child is-3"></div>
+        <div class="layout-default__left tile is-child is-3">
+          <i class="fa fa-user-circle-o"></i>
+        </div>
 
         <!-- <div > -->
         <perfect-scrollbar
