@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div class="content" v-if="profile">
     <Modal @close="closeFollowerModal" :isActive="modalFollower">
       <div v-for="(follower, key) in followers" :key="key" class="relationshipsInfo">
         <figure class="image is-48x48">
@@ -25,24 +25,27 @@
       </div>
     </Modal>
 
-    <img class="profileImg" src="https://i.stack.imgur.com/atUuf.png" />
+    <img v-if="profile.profileImg" class="profileImg" :src="profile.profileImg" />
+    <img v-else class="profileImg" src="../assets/user.png" />
 
     <div class="about">
-      <h2 class="name">Josué Nicholson</h2>
+      <h2 class="name">{{profile.name}}</h2>
+
+      <button class="button is-small is-info">Seguir</button>
+      <button class="button is-small is-danger">Desseguir</button>
 
       <p class="description">
-        Estudante de engenharia de software e técnico em mecânica.
-        <br />Tenho 19 anos, gosto de música pop.
+        {{profile.description}}
       </p>
     </div>
 
     <div class="data">
       <div class="buttons" @click="openFollowingModal">
-        <p class="following">Seguindo: 213</p>
+        <p class="following">Seguindo: {{profile.following}}</p>
       </div>
 
       <div class="buttons" @click="openFollowerModal">
-        <p class="followers">Seguidores: 457</p>
+        <p class="followers">Seguidores: {{profile.followers}}</p>
       </div>
     </div>
   </div>
@@ -50,6 +53,7 @@
 
 <script>
 import Modal from "@/components/Modal";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -63,27 +67,27 @@ export default {
       followers: [
         {
           name: "Samuel Albuquerque",
-          isFollowed: true,
+          isFollowed: true
         },
         {
           name: "Samuel Albuquerque ",
-          isFollowed: false,
+          isFollowed: false
         },
         {
           name: "Samuel Albuquerque",
-          isFollowed: true,
+          isFollowed: true
         },
         {
           name: "Samuel Albuquerque",
-          isFollowed: false,
+          isFollowed: false
         },
         {
           name: "Samuel Albuquerque",
-          isFollowed: true,
+          isFollowed: true
         },
         {
           name: "Samuel Albuquerque",
-          isFollowed: true,
+          isFollowed: true
         }
       ],
       following: [
@@ -123,6 +127,18 @@ export default {
     closeFollowingModal() {
       this.modalFollowing = false;
     }
+  },
+
+  computed: {
+    ...mapGetters({
+      profile: "search/getUserProfileSearched"
+    })
+  },
+
+  mounted() {
+    let uid = this.$route.path.split("/profile/")[1];
+    console.log(uid);
+    this.$store.dispatch("search/searchUserProfile", uid);
   }
 };
 </script>
@@ -137,8 +153,8 @@ export default {
     margin: 0;
   }
 
-  .button{
-    margin-left: 20px
+  .button {
+    margin-left: 20px;
   }
 
   figure {
@@ -158,7 +174,7 @@ export default {
   flex-direction: column;
 }
 .profileImg {
-  background-color: rgb(23, 201, 100);
+  // background-color: rgb(23, 201, 100);
   border-radius: 100%;
   height: 120px;
   object-fit: cover;

@@ -116,10 +116,10 @@ export default {
     //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
     // })
 
-    this.$store.dispatch("user/unfollowSomeone", {
-      user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
-      uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
-    })
+    // this.$store.dispatch("user/unfollowSomeone", {
+    //   user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
   }
 };
 </script>
