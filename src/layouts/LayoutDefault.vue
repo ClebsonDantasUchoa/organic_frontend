@@ -7,7 +7,6 @@
 
       <div class="layout-default__content tile is-parent">
         <div class="layout-default__left tile is-child is-3">
-          <i class="fa fa-user-circle-o"></i>
         </div>
 
         <!-- <div > -->
@@ -36,6 +35,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "../assets/css/_variables"
 @import "../assets/css/mixins"
 
 .layout-default
@@ -59,6 +59,19 @@ export default {
 
   &__left, &__middle, &__right
     padding: 5px
+    .userProfile
+      cursor: pointer
+      .userProfileTitle
+        justify-content: center
+        color: $greenish-gray
+        font-weight: bold
+      .userIcon
+        justify-content: center
+        margin-top: 20px
+        .icon
+          font-size: 3.5rem
+          color: $greenish-gray
+
 
   &__left
     border-right: solid 1px rgba(0, 0, 0, .1)
