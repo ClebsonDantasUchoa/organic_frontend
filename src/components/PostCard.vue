@@ -66,12 +66,13 @@ export default {
       this.showModal = !this.showModal;
     },
 
-    convertDateInTimeAgo(date){
+    convertDateInTimeAgo(date) {
       TimeAgo.addLocale(pt);
-      const timeAgo = new TimeAgo('pt-BR')
+      const timeAgo = new TimeAgo("pt-BR");
 
-      return timeAgo.format(date)
-    }
+      return timeAgo.format(date);
+    },
+
   }
 };
 </script>
