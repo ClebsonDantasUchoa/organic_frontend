@@ -35,7 +35,7 @@
       <article class="message is-danger">
         <div v-if="error" class="message-body">{{error}}</div>
       </article>
-      <input class="input is-rounded submit" type="submit" value="Login" />
+      <div class="button input is-success is-rounded submit" :class="{'is-loading': loading}" @click="submit">Login</div>
       <p>ou</p>
       <router-link to="/signup">
         <input class="input is-rounded submit" type="submit" value="Crie sua conta" />
@@ -54,21 +54,25 @@ export default {
         email: "",
         password: ""
       },
-      error: null
+      error: null,
+      loading: false
     };
   },
   methods: {
     submit() {
+      this.loading = true
       firebase
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(response => {
           localStorage.setItem("uemail", response.user.email)
           this.$router.replace({ name: "feed" });
+          this.loading = false;
         })
         .catch(err => {
           this.error = err.message;
-        });
+          this.loading = false;
+        })
     }
   }
 };
