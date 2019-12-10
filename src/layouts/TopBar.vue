@@ -13,9 +13,9 @@
         <i class="fas fa-users" @click="pushRoute('/groups')"></i>
       </div>
 
-      <div class="icon" :class="{'icon--active': activeIcon('/chat')}">
+      <!-- <div class="icon" :class="{'icon--active': activeIcon('/chat')}">
         <i class="fas fa-comments" @click="pushRoute('/chat')"></i>
-      </div>
+      </div>-->
 
       <span class="icon" :class="{'icon--active': activeIcon('/store')}">
         <i class="fas fa-store" @click="pushRoute('/store')"></i>
@@ -23,6 +23,10 @@
 
       <div class="icon" :class="{'icon--active': activeIcon('/notifications')}">
         <i class="fas fa-bell" @click="pushRoute('/notifications')"></i>
+      </div>
+
+      <div class="icon" :class="{'icon--active': activeIcon('/profile')}">
+        <i class="fa fa-user-circle" @click="pushRoute('/profile')"></i>
       </div>
     </div>
 
