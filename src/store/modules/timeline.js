@@ -7,7 +7,7 @@ const state = {
       postImage: require("../../assets/1.jpg"),
       message: "Colhi hoje pela manhã na minha horta.",
       event_date: "2019-10-09T09:10:02.000Z",
-      likes: 0,
+      likes: [],
       comments: {
         total: 1,
         available: [
@@ -30,7 +30,7 @@ const state = {
       message:
         "Hoje eu vivo uma vida diferente de tudo que já vivi, vou contar um pouco mais da minha experiência... ver mais.",
       event_date: "2019-10-09T09:10:02.000Z",
-      likes: 0,
+      likes: [],
       comments: {
         total: 0,
         available: []
@@ -44,7 +44,7 @@ const state = {
       message:
         "Bem pessoal, hoje vou falar de uma receita nova que aprendi com um amigo.",
       event_date: "2019-10-09T09:10:02.000Z",
-      likes: 0,
+      likes: [],
       comments: {
         total: 0,
         available: []

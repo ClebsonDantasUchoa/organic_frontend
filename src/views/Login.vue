@@ -61,7 +61,9 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.form.email, this.form.password)
         .then(response => {
-          localStorage.setItem("uemail", response.user.email);
+          localStorage.setItem("uemail", response.user.email)
+          localStorage.setItem("uid", response.user.uid)
+          localStorage.setItem("uname", response.user.displayName)
           this.$router.replace({ name: "feed" });
         })
         .catch(err => {
