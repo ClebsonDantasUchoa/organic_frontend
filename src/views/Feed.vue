@@ -15,7 +15,7 @@ import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
-let db = firebase.firestore()
+let db = firebase.firestore();
 
 export default {
   components: {
@@ -62,8 +62,8 @@ export default {
       //   }
       // };
 
-      let uid = localStorage.getItem("uid")
-      if(uid == null) return
+      let uid = localStorage.getItem("uid");
+      if (uid == null) return;
 
       let post = {
         autorImage: "",
@@ -75,26 +75,51 @@ export default {
         likes: []
       }
 
-      db.collection("post").add(post).then(function(docRef) {
-        db.collection("post").doc(docRef.id).update({
-          _id: docRef.id
+      db.collection("post")
+        .add(post)
+        .then(function(docRef) {
+          db.collection("post")
+            .doc(docRef.id)
+            .update({
+              _id: docRef.id
+            });
+          post["_id"] = docRef.id;
+          console.log(post);
+          console.log("Post created with ID: ", docRef.id);
         })
-        post["_id"] = docRef.id
-        console.log("Post created with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-        console.error("Error adding Post: ", error);
-      });
+        .catch(function(error) {
+          console.error("Error adding Post: ", error);
+        });
+
       post["comments"] = {
         total: 0,
         available: []
-      }
+      };
+
       this.$store.dispatch("timeline/publishContent", post);
     }
   },
 
   mounted() {
-    // this.postList = this.posts;
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "xpbaDfkP1IcBZoLdEcDkTkkEGO22",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
+
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // });
+
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "FZjsDiW3U03j21Ap7QjT",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
+
+    this.$store.dispatch("user/unfollowSomeone", {
+      user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+      uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    })
   }
 };
 </script>
