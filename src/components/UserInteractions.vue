@@ -124,19 +124,35 @@ export default {
       this.modalComment = false;
     },
 
-    postRating(){
+    async postRating(){ 
+      let userRef = await db.collection("user").doc(localStorage.getItem("uid"))
       if(this.liked===true){
-        this.liked = false;
+        this.liked = false
+        //await db.collection("post").doc(this.post_id).update({
+        await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
+          likes: firebase.firestore.FieldValue.arrayRemove(userRef)
+        }).then(() => {
+          this.liked = false;
+        })
+        .catch(e => {
+          console.log("Error to like: ", e.message)
+          this.liked = true
+        })  
       }
       else{
-        
         this.liked = true;
-        this.$emit("liked");
-
+        //await db.collection("post").doc(this.post_id).update({
+        await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
+          likes: firebase.firestore.FieldValue.arrayUnion(userRef)
+        }).then(() => {
+          this.liked = true;
+          this.$emit("liked");
+        }).catch(e => {
+          this.liked = false;
+          console.log("Error to unlike: ", e.message)
+        })
       }
     }
-
-
   }
 };
 </script>
