@@ -63,6 +63,12 @@ const mutations = {
     post.comments.available.push(payload)
     post.comments.total += 1
     console.log(state.posts)
+  },
+
+  pushLikeInPosts: (state, payload) => {
+    let post = state.posts.filter(post => post._id === payload.post_id)[0]
+    post.likes += 1
+    console.log(state.posts)
   }
 }
 
@@ -74,7 +80,12 @@ const actions = {
 
   publishComment: (context, payload) => {
     context.commit("pushCommentInPosts", payload)
-  }
+  },
+
+  publishLike: (context, payload) => {
+    context.commit("pushLikeInPosts", payload)
+  },
+
 }
 
 const getters = {

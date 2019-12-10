@@ -20,11 +20,11 @@
     </Modal>
 
     <div class="user-interactions__buttons">
-      <div class="icon">
+      <div class="icon" @click="postRating" :class="{'icon--liked':liked}">
         <i class="fab fa-gratipay"></i>
       </div>
       {{likes}}
-      <div class="icon">
+      <div class="icon" @click="openCommentModal">
         <i class="far fa-comment"></i>
       </div>
       {{comments.total}}
@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       modalComment: false,
-      
+      liked: false
     };
   },
   methods: {
@@ -100,7 +100,21 @@ export default {
 
     closeCommentModal() {
       this.modalComment = false;
+    },
+
+    postRating(){
+      if(this.liked===true){
+        this.liked = false;
+      }
+      else{
+        
+        this.liked = true;
+        this.$emit("liked");
+
+      }
     }
+
+
   }
 };
 </script>
@@ -116,6 +130,8 @@ export default {
     padding: 10px 0
     .icon
       cursor: pointer
+      &--liked
+        color: red
 
   &__post-input
     .post-input

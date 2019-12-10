@@ -14,6 +14,8 @@
 import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
 import { mapGetters } from "vuex";
+import firebase from "firebase";
+let db = firebase.firestore();
 
 export default {
   components: {
@@ -61,6 +63,25 @@ export default {
       };
 
       this.$store.dispatch("timeline/publishContent", post);
+    },
+    async getPost(postId) {
+      postId = "rMhpKAgu0deW2D35fHzy";
+      this.loading = true;
+      if (this.error) return;
+      var docRef = db.collection("post").doc(postId);
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            console.log("Document data:", doc.data());
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
+        });
     }
   },
 
