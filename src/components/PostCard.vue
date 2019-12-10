@@ -19,7 +19,7 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes" :comments="post.comments" />
+      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes.length" :comments="post.comments" />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->

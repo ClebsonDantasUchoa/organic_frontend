@@ -72,7 +72,7 @@ export default {
         postImage: "",
         message: content,
         event_date: new Date(),
-        likes: 0
+        likes: []
       }
 
       db.collection("post").add(post).then(function(docRef) {
