@@ -48,6 +48,8 @@
 import PostInput from "@/components/PostInput";
 import Modal from "@/components/Modal";
 import Comment from "@/components/Comment";
+import firebase from "firebase";
+let db = firebase.firestore()
 
 export default {
   components: {
@@ -82,14 +84,34 @@ export default {
   },
   methods: {
     publishComment(text) {
+      // let comment = {
+      //   _id: "12",
+      //   post_id: this.post_id,
+      //   author: { name: "Michael Grubs" },
+      //   text: text,
+      //   event_date: new Date(),
+      //   likes: 0
+      // };
+
       let comment = {
-        _id: "12",
         post_id: this.post_id,
-        author: { name: "Michael Grubs" },
+        author: { name: localStorage.getItem("uname")},
+        user_id: localStorage.getItem("uid"),
         text: text,
         event_date: new Date(),
         likes: 0
-      };
+      }
+
+      db.collection("comments").add(comment).then(function(docRef) {
+        db.collection("comments").doc(docRef.id).update({
+          _id: docRef.id
+        })
+        comment["_id"] = docRef.id
+        console.log("Comment created with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+        console.error("Error adding Comment: ", error);
+      });
 
       this.$store.dispatch("timeline/publishComment", comment);
     },

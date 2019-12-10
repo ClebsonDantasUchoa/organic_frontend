@@ -108,22 +108,28 @@ export default {
       async submit() {
         this.loading = true
         if(this.error) return
+        let uid;
         try {
           await firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password).then(data => {
+            console.log("--------USER ID----------")
+            uid = data.user.uid
+            console.log(uid)
             data.user.updateProfile({
                 displayName: this.form.name
             })
+            localStorage.setItem("uid", uid)
           })
-          await this.saveUserData()
+          await this.saveUserData(uid)
           localStorage.setItem("uemail", this.form.email)
+          localStorage.setItem("uname", this.form.name)
           this.$router.push("/feed");
         } catch (error) {
           this.error = error.message;
         }
         this.loading = false
       },
-      async saveUserData(){
-        await db.collection("users").add({
+      async saveUserData(uid){
+        await db.collection("users").doc(uid).set({
           created: new Date(),
           description: this.form.description,
           email: this.form.email,
@@ -131,11 +137,11 @@ export default {
           following: 0,
           name: this.form.name
         })
-        .then(function(docRef) {
-          db.collection("users").doc(docRef.id).update({
-            _id: docRef.id
+        .then(function() {
+          db.collection("users").doc(uid).update({
+            _id: uid
           })
-          console.log("User created with ID: ", docRef.id);
+          console.log("User created with ID: ", uid);
         })
         .catch(function(error) {
           console.error("Error adding User: ", error);

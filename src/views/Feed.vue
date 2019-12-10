@@ -14,6 +14,8 @@
 import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
 import { mapGetters } from "vuex";
+import firebase from "firebase";
+let db = firebase.firestore()
 
 export default {
   components: {
@@ -47,19 +49,46 @@ export default {
 
   methods: {
     publishContent(content) {
+      // let post = {
+      //   autorImage: "https://thispersondoesnotexist.com/image",
+      //   autor: "Bla",
+      //   postImage: "",
+      //   message: content,
+      //   event_date: "2019-10-09T09:10:02.000Z",
+      //   likes: 0,
+      //   comments: {
+      //     total: 0,
+      //     available: []
+      //   }
+      // };
+
+      let uid = localStorage.getItem("uid")
+      if(uid == null) return
+
       let post = {
-        autorImage: "https://thispersondoesnotexist.com/image",
-        autor: "Bla",
+        autorImage: "",
+        autor: localStorage.getItem("uname"),
+        user_id: uid,
         postImage: "",
         message: content,
-        event_date: "2019-10-09T09:10:02.000Z",
-        likes: 0,
-        comments: {
-          total: 0,
-          available: []
-        }
-      };
+        event_date: new Date(),
+        likes: 0
+      }
 
+      db.collection("post").add(post).then(function(docRef) {
+        db.collection("post").doc(docRef.id).update({
+          _id: docRef.id
+        })
+        post["_id"] = docRef.id
+        console.log("Post created with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+        console.error("Error adding Post: ", error);
+      });
+      post["comments"] = {
+        total: 0,
+        available: []
+      }
       this.$store.dispatch("timeline/publishContent", post);
     }
   },
