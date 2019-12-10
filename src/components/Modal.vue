@@ -40,8 +40,9 @@ export default {
 .modal
   &-card
     @media screen and (min-width: 769px)
-      min-width: 640px
-      width: 70%
+      min-width: 300px
+      max-width: 1000px
+      width: fit-content
     border-radius: 5px
     &-head
       padding: 0

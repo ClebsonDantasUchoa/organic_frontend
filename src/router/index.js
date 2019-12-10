@@ -38,6 +38,11 @@ const routes = [
         path: "/notifications",
         name: "notifications",
         component: () => import("../views/Notifications"),
+      },
+      {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('../views/Profile.vue')
       }
     ]
   },
@@ -52,10 +57,10 @@ const routes = [
     component: () => import("../views/Signup.vue")
   },
   {
-    path: "/test",
-    name: "test",
-    component: () => import("../views/Test.vue")
-  }
+    path: '/test',
+    name: 'test',
+    component: () => import('../views/Test.vue')
+  },
 ]
 
 const router = new VueRouter({
