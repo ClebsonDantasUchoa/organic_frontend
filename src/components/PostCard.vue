@@ -2,11 +2,20 @@
   <div class="post-card">
     <div class="post-card__author">
       <figure class="image is-48x48">
-        <img class="is-rounded" :src="post.autorImage" alt="Avatar" />
+        <img
+          v-if="post.author.profileImg"
+          class="is-rounded"
+          :src="post.author.profileImg"
+          alt="Avatar"
+        />
+        <img v-else class="is-rounded" src="../assets/user.png" />
       </figure>
 
       <div>
-        <p class="postAuthor">{{post.autor}}</p>
+        <p
+          class="postAuthor"
+          @click="redirectToAnotherProfile(post.author._id)"
+        >{{post.author.name}}</p>
         <p class="is-size-7 postDate">{{convertDateInTimeAgo(new Date(post.event_date))}}</p>
       </div>
     </div>
@@ -19,7 +28,11 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes.length"  />
+      <UserInteractions
+        :post_image="post.postImage"
+        :post_id="post._id"
+        :likes="post.likes.length"
+      />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
@@ -44,8 +57,8 @@
 
 <script>
 import UserInteractions from "@/components/UserInteractions";
-import TimeAgo from 'javascript-time-ago'
-import pt from 'javascript-time-ago/locale/pt'
+import TimeAgo from "javascript-time-ago";
+import pt from "javascript-time-ago/locale/pt";
 
 export default {
   components: {
@@ -66,13 +79,16 @@ export default {
       this.showModal = !this.showModal;
     },
 
+    redirectToAnotherProfile(uid) {
+      this.$router.push(`/profile/${uid}`);
+    },
+
     convertDateInTimeAgo(date) {
       TimeAgo.addLocale(pt);
       const timeAgo = new TimeAgo("pt-BR");
 
       return timeAgo.format(date);
-    },
-
+    }
   }
 };
 </script>
@@ -108,6 +124,7 @@ export default {
       color: black
     .postAuthor
       color: $greenish-gray
+      cursor: pointer
 
   &__content
     padding: 15px 0px
