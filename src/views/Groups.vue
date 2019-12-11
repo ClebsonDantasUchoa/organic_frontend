@@ -4,7 +4,8 @@
     <div v-for="(user, key) in community" :key="key" class="relationshipsInfo">
       <div class="userInfo">
         <figure class="image is-48x48">
-          <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
+          <img v-if="user.profileImg" class="myImg" :src="user.profileImg" alt="avatar" />
+          <img v-else class="myImg" src="../assets/user.png" alt="avatar" />
         </figure>
         <p class="userName" @click="redirectToAnotherProfile(user._id)">{{user.name}}</p>
       </div>
@@ -31,7 +32,7 @@ export default {
   },
 
   methods: {
-    redirectToAnotherProfile(uid){
+    redirectToAnotherProfile(uid) {
       this.$router.push(`/profile/${uid}`);
     }
   }
@@ -47,6 +48,13 @@ export default {
   border-style: solid;
   padding-bottom: 10px;
   justify-content: space-between;
+
+  .myImg {
+    border-radius: 100%;
+    height: 48px;
+    object-fit: cover;
+    width: 48px;
+  }
 
   .userName {
     margin: 0;
@@ -67,9 +75,10 @@ export default {
     margin-bottom: 0;
   }
 
-  .userInfo{
+  .userInfo {
     display: flex;
-    align-items: center
+    align-items: center;
+    padding: 0 10px;
   }
 }
 </style>

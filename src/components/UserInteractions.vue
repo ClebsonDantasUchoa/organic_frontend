@@ -9,9 +9,9 @@
         </div>
         <div class="tile is-parent">
           <div class="tile is-child">
-            <!-- <div v-for="(comment, key) in comments.available" :key="key">
+            <div v-for="(comment, key) in comments.available" :key="key">
               <Comment :comment="comment"></Comment>
-            </div>-->
+            </div>
             <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
           </div>
         </div>
@@ -37,7 +37,7 @@
       <div class="icon" @click="openCommentModal">
         <i class="far fa-comment"></i>
       </div>
-      <!-- {{comments.total}} -->
+      {{comments.available.length}}
     </div>
 
     <!-- <div v-if="comments.available.length">
@@ -58,13 +58,13 @@
 import PostInput from "@/components/PostInput";
 import Modal from "@/components/Modal";
 import { mapGetters } from "vuex";
-// import Comment from "@/components/Comment";
+import Comment from "@/components/Comment";
 import firebase from "firebase";
 let db = firebase.firestore()
 
 export default {
   components: {
-    // Comment,
+    Comment,
     Modal,
     PostInput
   },
@@ -93,6 +93,9 @@ export default {
       modalComment: false,
       liked: false,
       modalLike: false,
+      comments: {
+        available: []
+      }
     };
   },
 
@@ -141,8 +144,25 @@ export default {
       this.$store.dispatch("timeline/publishComment", comment);
     },
 
-    openCommentModal() {
+    async openCommentModal() {
       this.modalComment = true;
+      let commentsOfPost = []
+      let post_id = this.post_id
+      let comments = this.comments
+
+      await db.collection("comments").get().then(function (querySnapshot){
+        querySnapshot.forEach(function(doc) {
+          if(doc.data().post_id == post_id){
+            let data = doc.data()
+            let date = new Date(data["event_date"].seconds * 1000)
+            data["event_date"] = date.toISOString()
+            commentsOfPost.push(data)
+          }
+          comments.available = commentsOfPost;
+        })
+      })
+      
+      console.log("Comments avaiable :", this.comments.available);
     },
 
     closeCommentModal() {
@@ -153,7 +173,6 @@ export default {
       let userRef = await db.collection("user").doc(localStorage.getItem("uid"))
       if(this.liked===true){
         this.liked = false
-
         await db.collection("post").doc(this.post_id).update({
           likes: firebase.firestore.FieldValue.arrayRemove(userRef)
         }).then(() => {
