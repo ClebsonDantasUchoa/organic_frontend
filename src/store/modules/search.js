@@ -1,42 +1,56 @@
+import firebase from "firebase"
+
 const state = {
-  users: [
-    {
-      _id: "Zsbb6hL2e2UQ0NcUOaue8af9CZl1",
-      created: new Date(),
-      description: "qqqqq",
-      email: "aaaa@aaaa.com",
-      followers: 1,
-      following: 0,
-      timeline: "",
-      userFollow: [],
-      name: "Fulano 1"
-    },
-    {
-      _id: "Ssbb6hL2e2uhjdsiu$Oaue8af9CAb4",
-      created: new Date(),
-      description: "qqqqq",
-      email: "a@aaaa.com",
-      followers: 1,
-      following: 0,
-      timeline: "",
-      userFollow: [],
-      name: "Fulano 1"
-    }
-  ]
+  community: [],
+  userProfileSearched: null
 }
 
-const mutations = {}
+const mutations = {
+  setUserProfileSearched: (state, payload) => {
+    state.userProfileSearched = payload
+  },
+  setCommunity: (state, payload) => {
+    console.log("payload ", payload)
+    state.community = payload
+  }
+}
 
 const actions = {
-  // searchUsers({commit}, payload) {
-  //   let db = firebase.firestore()
+  async searchUserProfile({ commit }, uid) {
+    let db = firebase.firestore()
+    // commit("setUserProfileSearched", null)
 
-  //   db.collection("users")
-  // }
+    await db
+      .collection("users")
+      .doc(uid)
+      .onSnapshot(doc => {
+        let data = doc.data()
+
+        data.userFollow.get().then(uFollow => {
+          data["userFollow"] = uFollow.data()
+          commit("setUserProfileSearched", data)
+        })
+      })
+  },
+
+  async searchCommunity({commit}){
+    let db = firebase.firestore()
+
+    await db.collection("users").get().then(function(querySnapshot) {
+      let users = []
+      querySnapshot.forEach(function(doc) {
+        users.push(doc.data())
+        //console.log(doc.id, " => ", doc.data());
+      });
+      commit("setCommunity", users)
+    });
+  }
+
 }
 
 const getters = {
-  getUsers: state => state.users
+  getCommunity: state => state.community,
+  getUserProfileSearched: state => state.userProfileSearched,
 }
 
 export default {

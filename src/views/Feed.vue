@@ -5,7 +5,7 @@
     </div>
 
     <div class="feed__content">
-      <PostCard v-for="(post, key) in posts " :post="post" :key="key" />
+      <PostCard v-for="(post, key) in timeline " :post="post" :key="key" />
     </div>
   </div>
 </template>
@@ -27,42 +27,21 @@ export default {
 
   data() {
     return {
-      // postList: []
     };
   },
 
   computed: {
     ...mapGetters({
       posts: "timeline/getPosts",
-      user: "user/getUser"
+      user: "user/getUser",
+      timeline: "timeline/getTimelinePosts"
+
     })
   },
 
-  // watch: {
-  //   posts: {
-  //     handler: function() {
-  //       console.log("posts");
-  //       // this.postList = [];
-  //       this.postList = this.posts
-  //     },
-  //     deep: true
-  //   }
-  // },
-
   methods: {
+    
     publishContent(content) {
-      // let post = {
-      //   autorImage: "https://thispersondoesnotexist.com/image",
-      //   autor: "Bla",
-      //   postImage: "",
-      //   message: content,
-      //   event_date: "2019-10-09T09:10:02.000Z",
-      //   likes: 0,
-      //   comments: {
-      //     total: 0,
-      //     available: []
-      //   }
-      // };
 
       let uid = localStorage.getItem("uid");
       if (uid == null) return;
@@ -132,10 +111,12 @@ export default {
     //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
     // })
 
-    this.$store.dispatch("user/unfollowSomeone", {
-      user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
-      uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
-    })
+    // this.$store.dispatch("user/unfollowSomeone", {
+    //   user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
+
+    this.$store.dispatch("timeline/searchTimelinePosts")
   }
 };
 </script>

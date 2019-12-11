@@ -1,4 +1,7 @@
+import firebase from "firebase"
+
 const state = {
+  timelinePosts: [],
   posts: [
     {
       _id: "1",
@@ -69,6 +72,10 @@ const mutations = {
     let post = state.posts.filter(post => post._id === payload.post_id)[0]
     post.likes += 1
     console.log(state.posts)
+  },
+
+  setTimelinePosts: (state, payload) => {
+    state.timelinePosts = payload
   }
 }
 
@@ -86,10 +93,29 @@ const actions = {
     context.commit("pushLikeInPosts", payload)
   },
 
+  async searchTimelinePosts({commit}){
+    let db = firebase.firestore()
+
+    await db.collection("timeline")
+    .doc(localStorage.getItem("uid"))
+    .onSnapshot(
+      function (snapshot) {
+        let posts = []
+        snapshot.data().posts.forEach(function(post) {
+          let post_id = post.path.split("post/")[1]
+          db.collection("post").doc(post_id).get().then(doc => {
+            posts.push(doc.data())
+          })
+        });
+        commit("setTimelinePosts", posts)
+      }
+    )
+  }
 }
 
 const getters = {
-  getPosts: state => state.posts
+  getPosts: state => state.posts,
+  getTimelinePosts: state => state.timelinePosts
 }
 
 export default {

@@ -12,9 +12,6 @@ import search from "@/store/modules/search"
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
   modules: {
     timeline,
     user,
