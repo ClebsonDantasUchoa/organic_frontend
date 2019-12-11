@@ -15,6 +15,8 @@ import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
+import uuuid from "uuid/v4"
+
 let db = firebase.firestore();
 
 export default {
@@ -66,6 +68,7 @@ export default {
       if(uid == null) return
 
       let post = {
+        _id: uuuid(),
         autorImage: "",
         autor: localStorage.getItem("uname"),
         user_id: uid,
@@ -75,12 +78,12 @@ export default {
         likes: []
       }
 
-      db.collection("post").add(post).then(function(docRef) {
-        db.collection("post").doc(docRef.id).update({
-          _id: docRef.id
-        })
-        post["_id"] = docRef.id
-        console.log("Post created with ID: ", docRef.id);
+      db.collection("post").doc(post._id).set(post).then(() => {
+        // db.collection("post").doc(docRef.id).update({
+        //   _id: docRef.id
+        // })
+        // post["_id"] = docRef.id
+        // console.log("Post created with ID: ", docRef.id);
       })
       .catch(function(error) {
         console.error("Error adding Post: ", error);
