@@ -4,11 +4,11 @@
       <figure class="image is-48x48">
         <img
           v-if="post.author.profileImg"
-          class="is-rounded"
+          class="post-card__author__img"
           :src="post.author.profileImg"
           alt="Avatar"
         />
-        <img v-else class="is-rounded" src="../assets/user.png" />
+        <img v-else class="post-card__author__img" src="../assets/user.png" />
       </figure>
 
       <div>
@@ -33,25 +33,7 @@
         :post_id="post._id"
         :likes="post.likes.length"
       />
-
-      <!-- <button class="button is-success is-outlined">Curtir</button> -->
-      <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
     </div>
-
-    <!-- <div class="modal" :class="{'activeModal':showModal}">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <button class="delete" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
-          <button class="button is-success" @click="setModalVisibilty">Comentar</button>
-        </footer>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -97,26 +79,23 @@ export default {
 @import "../assets/css/mixins"
 @import "../assets/css/variables"
 
-// .activeModal
-//   display: flex
-
 .post-card
   min-width: 100%
   padding: 10px 20px
   box-shadow: 0px 0px 5px rgba(0, 0, 0, .2)
   border-radius: 5px
 
-
   &__author
     display: flex
     align-items: center
-    // margin-left: 30px
     margin-top: 10px
     border-bottom: 1px
 
-  // &__content p
-  //   text-align: justify
-  //   text-indent: 20px
+    &__img
+      border-radius: 100%
+      height: 48px
+      object-fit: cover
+      width: 48px
 
   &__author
     p
@@ -133,48 +112,14 @@ export default {
       max-height: 530px
       height: auto
       width: 100%
-      // background-color: blue
       overflow: hidden
       border-radius: 5px
 
       img
         border-radius: 5px
-        // background-color: red
-        // display: block
-        // min-width: 100%
-
-  // .avatar
-  //   border-radius: 50%
-  //   border-width: 10px
-  //   border-color: rgb(23, 201, 100)
-  //   width: 45px
-  //   height: 45px
-
-  // .postImage
-    // margin: 10px 0
 
 .post-card__interactions
-  // display: flex
-  // align-items: flex-start
-  // margin-bottom: 10px
-
   .icon
     cursor: pointer
     font-size: 1.5rem
-
-// button
-//   background-color: white
-//   color: rgb(23, 201, 100)
-//   margin-left: 10px
-
-// @media all and (min-width: 400px)
-//   .post-card
-//     max-width: 500px
-
-
-// @media all and (max-width: 330px)
-//   .post-card
-//     max-width: 290px
-
-
 </style>

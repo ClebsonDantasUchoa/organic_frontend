@@ -3,7 +3,8 @@
     <div class="post-input__wrap">
       <div class="post-input__avatar">
         <figure class="image is-32x32">
-          <img class="is-rounded" src="https://bit.ly/2YlBRrr" />
+          <img v-if="user && user.profileImg" :src="user.profileImg" />
+          <img v-else src="../assets/user.png" />
         </figure>
       </div>
 
@@ -38,6 +39,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   props: {
     placeholder: {
@@ -53,8 +56,15 @@ export default {
   data() {
     return {
       text: "",
-      image: ""
+      image: "",
+      uid: localStorage.getItem("uid")
     };
+  },
+
+  computed: {
+    ...mapGetters({
+      user: "user/getLoggedUserProfile"
+    })
   },
 
   methods: {
@@ -66,7 +76,7 @@ export default {
         this.$emit("submit", this.text);
       }
 
-      this.image = ""
+      this.image = "";
       this.text = "";
     },
 
@@ -92,6 +102,10 @@ export default {
       };
       reader.readAsArrayBuffer(file);
     }
+  },
+
+  mounted() {
+    this.$store.dispatch("user/findLoggedUserProfile", this.uid);
   }
 };
 </script>
@@ -115,6 +129,12 @@ export default {
 
   &__avatar
     cursor: pointer
+
+    img
+      border-radius: 100%
+      height: 32px
+      object-fit: cover
+      width: 32px
 
   textarea
     resize: none
