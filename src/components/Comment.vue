@@ -19,7 +19,7 @@
       <div class="icon">
         <i class="fab fa-gratipay"></i>
       </div>
-      {{comment.likes}}
+      <!-- {{comment.likes}} -->
     </div>
   </div>
 </template>
