@@ -11,12 +11,19 @@
           <div class="tile is-child">
             <!-- <div v-for="(comment, key) in comments.available" :key="key">
               <Comment :comment="comment"></Comment>
-            </div> -->
+            </div>-->
             <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
           </div>
         </div>
       </div>
-      
+    </Modal>
+
+    <Modal @close="closeLikeModal" :isActive="modalLike">
+      <div v-for="(user, key) in usersWhoLiked" :key="key" class="usersWhoLikedInfo">
+        <figure class="image is-48x48">
+          <img class="is-rounded" src="https://thispersondoesnotexist.com/image">
+        </figure>
+      </div>
     </Modal>
 
     <div class="user-interactions__buttons">
@@ -24,15 +31,16 @@
         <i class="fab fa-gratipay"></i>
       </div>
       {{likes}}
+      <span @click="openLikeModal">pessoas que curtiram</span>
       <div class="icon" @click="openCommentModal">
         <i class="far fa-comment"></i>
       </div>
       <!-- {{comments.total}} -->
     </div>
-    
+
     <!-- <div v-if="comments.available.length">
       <Comment :comment="comments.available[0]"></Comment>
-    </div> -->
+    </div>-->
 
     <div class="user-interactions__post-input">
       <PostInput
@@ -47,6 +55,7 @@
 <script>
 import PostInput from "@/components/PostInput";
 import Modal from "@/components/Modal";
+import { mapGetters } from "vuex";
 // import Comment from "@/components/Comment";
 import firebase from "firebase";
 let db = firebase.firestore()
@@ -79,9 +88,17 @@ export default {
   data() {
     return {
       modalComment: false,
-      liked: false
+      liked: false,
+      modalLike: false,
     };
   },
+
+  computed: {
+    ...mapGetters({
+      usersWhoLiked: "post/getUsersWhoLikedList"
+    })
+  },
+
   methods: {
     publishComment(text) {
       // let comment = {
@@ -152,7 +169,16 @@ export default {
           console.log("Error to unlike: ", e.message)
         })
       }
-    }
+    },
+
+    openLikeModal() {
+      this.$store.dispatch("post/searchUsersWhoLiked", this.post_id);
+      this.modalLike = true;
+    },
+
+    closeLikeModal() {
+      this.modalLike = false;
+    },
   }
 };
 </script>
@@ -161,6 +187,9 @@ export default {
 @import "../assets/css/mixins"
 
 .user-interactions
+  .usersWhoLikedInfo
+    display: flex
+
   .post-img
     border-radius: 5px
 
