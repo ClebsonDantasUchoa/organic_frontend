@@ -4,7 +4,8 @@ const state = {
   user: {
     loggedIn: false,
     data: null
-  }
+  },
+  profile: null
 }
 
 const mutations = {
@@ -13,6 +14,9 @@ const mutations = {
   },
   set_user(state, data) {
     state.user.data = data
+  },
+  set_profile(state, value) {
+    state.profile = value
   }
 }
 
@@ -36,6 +40,33 @@ const actions = {
       console.log("Usuário não logado")
     }
     console.log("*********************************")
+  },
+
+  async findLoggedUserProfile({ commit }, uid) {
+    let db = firebase.firestore()
+    // commit("set_profile", null)
+
+    await db
+      .collection("users")
+      .doc(uid)
+      .onSnapshot(async doc => {
+        let data = doc.data()
+
+        await data.userFollow.get().then(uFollow => {
+          data["userFollow"] = uFollow.data()
+          commit("set_profile", data)
+        })
+      })
+
+    // .get()
+    // .then(async doc => {
+    //   let data = doc.data()
+
+    //   await data.userFollow.get().then(uFollow => {
+    //     data["userFollow"] = uFollow.data()
+    //     commit("set_profile", data)
+    //   })
+    // })
   },
 
   // eslint-disable-next-line no-unused-vars
@@ -74,9 +105,8 @@ const actions = {
 }
 
 const getters = {
-  getUser(state) {
-    return state.user
-  }
+  getUser: state => state.user,
+  getLoggedUserProfile: state => state.profile
 }
 
 export default {

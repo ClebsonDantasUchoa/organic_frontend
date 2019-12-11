@@ -16,7 +16,8 @@
           <div class="tile is-child">
             <div v-for="(following, key) in following" :key="key" class="relationshipsInfo">
               <figure class="image is-48x48">
-                <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
+                <!-- <img class="is-rounded" src="https://thispersondoesnotexist.com/image" /> -->
+                <img class="is-rounded" src="../assets/user.png" />
               </figure>
               <p>{{following.name}}</p>
             </div>
@@ -31,12 +32,22 @@
     <div class="about">
       <h2 class="name">{{profile.name}}</h2>
 
-      <button class="button is-small is-info">Seguir</button>
-      <button class="button is-small is-danger">Desseguir</button>
+      <div v-if="uid !== profileUid">
+        <button
+          v-if="!isFollowing"
+          class="button--follow button is-small"
+          :class="{'is-loading': loading}"
+          @click="follow"
+        >Seguir</button>
+        <button
+          v-else
+          class="button--unfollow button is-small"
+          :class="{'is-loading': loading}"
+          @click="unfollow"
+        >Desseguir</button>
+      </div>
 
-      <p class="description">
-        {{profile.description}}
-      </p>
+      <p class="description">{{profile.description}}</p>
     </div>
 
     <div class="data">
@@ -62,50 +73,18 @@ export default {
 
   data() {
     return {
+      uid: localStorage.getItem("uid"),
+      profileUid: "",
+      loading: false,
       modalFollower: false,
       modalFollowing: false,
       followers: [
         {
           name: "Samuel Albuquerque",
           isFollowed: true
-        },
-        {
-          name: "Samuel Albuquerque ",
-          isFollowed: false
-        },
-        {
-          name: "Samuel Albuquerque",
-          isFollowed: true
-        },
-        {
-          name: "Samuel Albuquerque",
-          isFollowed: false
-        },
-        {
-          name: "Samuel Albuquerque",
-          isFollowed: true
-        },
-        {
-          name: "Samuel Albuquerque",
-          isFollowed: true
         }
       ],
       following: [
-        {
-          name: "Justin"
-        },
-        {
-          name: "Justin"
-        },
-        {
-          name: "Justin"
-        },
-        {
-          name: "Justin"
-        },
-        {
-          name: "Justin"
-        },
         {
           name: "Justin"
         }
@@ -126,19 +105,70 @@ export default {
     },
     closeFollowingModal() {
       this.modalFollowing = false;
+    },
+
+    async follow() {
+      this.loading = true;
+      await this.$store.dispatch("user/followSomeone", {
+        user_following: this.profileUid,
+        uid: this.uid
+      });
+
+      // this.loading = false;
+    },
+
+    async unfollow() {
+      this.loading = true;
+      await this.$store.dispatch("user/unfollowSomeone", {
+        user_unfollowing: this.profileUid,
+        uid: this.uid
+      });
+
+      // this.loading = false;
+    },
+
+    searchUsers() {
+      this.profileUid = this.$route.path.split("/profile/")[1];
+      this.$store.dispatch("search/searchUserProfile", this.profileUid);
+      if (this.profileUid !== this.uid)
+        this.$store.dispatch("user/findLoggedUserProfile", this.uid);
+    }
+  },
+
+  watch: {
+    $route() {
+      this.searchUsers();
+    },
+
+    isFollowing() {
+      this.loading = false;
     }
   },
 
   computed: {
+    isFollowing() {
+      if (this.loggedUser) {
+        let following = this.loggedUser.userFollow.following.map(
+          fw => fw.path.split("users/")[1]
+        );
+        return following.includes(this.profileUid);
+      }
+      return false;
+    },
+
+    profile() {
+      if (this.uid === this.profileUid) return this.loggedUser;
+      else return this.searchedUser;
+    },
+
     ...mapGetters({
-      profile: "search/getUserProfileSearched"
+      loggedUser: "user/getLoggedUserProfile",
+      searchedUser: "search/getUserProfileSearched"
     })
   },
 
   mounted() {
-    let uid = this.$route.path.split("/profile/")[1];
-    console.log(uid);
-    this.$store.dispatch("search/searchUserProfile", uid);
+    this.searchUsers();
   }
 };
 </script>
@@ -173,6 +203,17 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
+.content .button--follow {
+  background-color: #379683;
+  color: white;
+}
+
+.content .button--unfollow {
+  background-color: #fa7268;
+  color: white;
+}
+
 .profileImg {
   // background-color: rgb(23, 201, 100);
   border-radius: 100%;

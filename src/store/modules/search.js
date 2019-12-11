@@ -1,9 +1,8 @@
 import firebase from "firebase"
 
 const state = {
-  usersSearched: [],
-  userProfileSearched: null,
   community: []
+  userProfileSearched: null
 }
 
 const mutations = {
@@ -19,13 +18,18 @@ const mutations = {
 const actions = {
   async searchUserProfile({ commit }, uid) {
     let db = firebase.firestore()
+    // commit("setUserProfileSearched", null)
 
     await db
       .collection("users")
       .doc(uid)
-      .get()
-      .then(doc => {
-        commit("setUserProfileSearched", doc.data())
+      .onSnapshot(doc => {
+        let data = doc.data()
+
+        data.userFollow.get().then(uFollow => {
+          data["userFollow"] = uFollow.data()
+          commit("setUserProfileSearched", data)
+        })
       })
   },
 
@@ -44,9 +48,8 @@ const actions = {
 }
 
 const getters = {
-  getUsers: state => state.users,
-  getUserProfileSearched: state => state.userProfileSearched,
   getCommunity: state => state.community
+  getUserProfileSearched: state => state.userProfileSearched
 }
 
 export default {
