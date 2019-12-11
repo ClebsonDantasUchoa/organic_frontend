@@ -1,7 +1,7 @@
 <template>
   <div class="feed">
     <div class="feed__header">
-      <PostInput @submit="publishContent" />
+      <PostInput :allowImage="true" @submit="publishContent" />
     </div>
 
     <div class="feed__content">
@@ -15,9 +15,10 @@ import PostCard from "@/components/PostCard";
 import PostInput from "@/components/PostInput";
 import { mapGetters } from "vuex";
 import firebase from "firebase";
-import uuuid from "uuid/v4"
+import uuuid from "uuid/v4";
 
 let db = firebase.firestore();
+let storage = firebase.storage();
 
 export default {
   components: {
@@ -26,8 +27,7 @@ export default {
   },
 
   data() {
-    return {
-    };
+    return {};
   },
 
   computed: {
@@ -35,14 +35,11 @@ export default {
       posts: "timeline/getPosts",
       user: "user/getUser",
       timeline: "timeline/getTimelinePosts"
-
     })
   },
 
   methods: {
-    
-    publishContent(content) {
-
+    async publishContent(content) {
       let uid = localStorage.getItem("uid");
       if (uid == null) return;
 
@@ -52,28 +49,44 @@ export default {
         autor: localStorage.getItem("uname"),
         user_id: uid,
         postImage: "",
-        message: content,
+        message: content.text,
         event_date: new Date(),
         likes: []
-      }
-
-      db.collection("post").doc(post._id).set(post).then(() => {
-        // db.collection("post").doc(docRef.id).update({
-        //   _id: docRef.id
-        // })
-        // post["_id"] = docRef.id
-        // console.log("Post created with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-        console.error("Error adding Post: ", error);
-      });
-      post["comments"] = {
-        total: 0,
-        available: []
       };
 
-      this.$store.dispatch("timeline/publishContent", post);
+      if (content.image) {
+        console.log(content);
+
+        let ref = storage
+          .ref("posts/")
+          .child(post._id)
+          .child("image");
+
+        await ref
+          .put(content.image.file, content.image.metadata)
+          .then(async function() {
+            await ref.getDownloadURL().then(response => {
+              post["postImage"] = response;
+            });
+          });
+      }
+
+      db.collection("post")
+        .doc(post._id)
+        .set(post)
+        .then(() => {})
+        .catch(function(error) {
+          console.error("Error adding Post: ", error);
+        });
+
+      // post["comments"] = {
+      //   total: 0,
+      //   available: []
+      // };
+
+      // this.$store.dispatch("timeline/publishContent", post);
     },
+
     async getPost(postId) {
       postId = "rMhpKAgu0deW2D35fHzy";
       this.loading = true;
@@ -116,7 +129,7 @@ export default {
     //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
     // })
 
-    this.$store.dispatch("timeline/searchTimelinePosts")
+    this.$store.dispatch("timeline/searchTimelinePosts");
   }
 };
 </script>
@@ -124,6 +137,7 @@ export default {
 <style lang="sass" scoped>
 .feed
   padding: 25px 15px
+  margin-bottom: 25px
 
   .post-card
     margin-bottom: 20px

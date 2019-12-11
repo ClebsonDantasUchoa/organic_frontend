@@ -1,65 +1,13 @@
 import firebase from "firebase"
 
 const state = {
-  timelinePosts: [],
-  posts: [
-    {
-      _id: "1",
-      autorImage: "https://thispersondoesnotexist.com/image",
-      autor: "Jucelino Abstract",
-      postImage: require("../../assets/1.jpg"),
-      message: "Colhi hoje pela manhã na minha horta.",
-      event_date: "2019-10-09T09:10:02.000Z",
-      likes: [],
-      comments: {
-        total: 1,
-        available: [
-          {
-            _id: "12",
-            post_id: "1",
-            author: { name: "Michael Grubs" },
-            text: "Preciso começar a cultivar as minhas também.",
-            event_date: new Date(),
-            likes: 0
-          }
-        ]
-      }
-    },
-    {
-      _id: "2",
-      autorImage: "https://thispersondoesnotexist.com/image",
-      autor: "Macchiato Soul",
-      postImage: require("../../assets/2.jpg"),
-      message:
-        "Hoje eu vivo uma vida diferente de tudo que já vivi, vou contar um pouco mais da minha experiência... ver mais.",
-      event_date: "2019-10-09T09:10:02.000Z",
-      likes: [],
-      comments: {
-        total: 0,
-        available: []
-      }
-    },
-    {
-      _id: "3",
-      autorImage: "https://thispersondoesnotexist.com/image",
-      autor: "Mil Grau",
-      postImage: require("../../assets/3.jpg"),
-      message:
-        "Bem pessoal, hoje vou falar de uma receita nova que aprendi com um amigo.",
-      event_date: "2019-10-09T09:10:02.000Z",
-      likes: [],
-      comments: {
-        total: 0,
-        available: []
-      }
-    }
-  ]
+  timelinePosts: []
 }
 
 const mutations = {
-  pushPosts: (state, payload) => {
-    state.posts.push(payload)
-  },
+  // pushPosts: (state, payload) => {
+  //   state.posts.push(payload)
+  // },
 
   pushCommentInPosts: (state, payload) => {
     let post = state.posts.filter(post => post._id === payload.post_id)[0]
@@ -80,10 +28,10 @@ const mutations = {
 }
 
 const actions = {
-  publishContent: (context, payload) => {
-    console.log(payload)
-    context.commit("pushPosts", payload)
-  },
+  // publishContent: (context, payload) => {
+  //   console.log(payload)
+  //   context.commit("pushPosts", payload)
+  // },
 
   publishComment: (context, payload) => {
     context.commit("pushCommentInPosts", payload)
@@ -93,28 +41,37 @@ const actions = {
     context.commit("pushLikeInPosts", payload)
   },
 
-  async searchTimelinePosts({commit}){
+  async searchTimelinePosts({ commit }) {
     let db = firebase.firestore()
 
-    await db.collection("timeline")
-    .doc(localStorage.getItem("uid"))
-    .onSnapshot(
-      function (snapshot) {
+    await db
+      .collection("timeline")
+      .doc(localStorage.getItem("uid"))
+      .onSnapshot(function(snapshot) {
         let posts = []
-        snapshot.data().posts.forEach(function(post) {
-          let post_id = post.path.split("post/")[1]
-          db.collection("post").doc(post_id).get().then(doc => {
-            posts.push(doc.data())
+        snapshot
+          .data()
+          .posts.reverse()
+          .forEach(function(post) {
+            let post_id = post.path.split("post/")[1]
+            db.collection("post")
+              .doc(post_id)
+              .get()
+              .then(doc => {
+                let data = doc.data()
+                data["event_date"] = new Date(
+                  data["event_date"].seconds * 1000
+                ).toISOString()
+                posts.push(data)
+              })
           })
-        });
         commit("setTimelinePosts", posts)
-      }
-    )
+      })
   }
 }
 
 const getters = {
-  getPosts: state => state.posts,
+  // getPosts: state => state.posts,
   getTimelinePosts: state => state.timelinePosts
 }
 

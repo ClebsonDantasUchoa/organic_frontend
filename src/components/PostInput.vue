@@ -18,6 +18,16 @@
         cols="25"
       ></textarea>
 
+      <div v-if="allowImage" class="post-input__upload-image">
+        <div class="file">
+          <input class="file-input" type="file" name="sheet" @change="getFile" />
+
+          <div class="icon">
+            <i class="fas fa-camera-retro"></i>
+          </div>
+        </div>
+      </div>
+
       <div class="post-input__submit">
         <div class="icon" @click="submit">
           <i class="fas fa-paper-plane"></i>
@@ -33,23 +43,54 @@ export default {
     placeholder: {
       type: String,
       default: "Escreva algo"
+    },
+    allowImage: {
+      type: Boolean,
+      default: false
     }
   },
 
   data() {
     return {
-      text: ""
+      text: "",
+      image: ""
     };
   },
 
   methods: {
     submit() {
       if (!this.text) return;
-      this.$emit("submit", this.text);
+      if (this.allowImage) {
+        this.$emit("submit", { text: this.text, image: this.image });
+      } else {
+        this.$emit("submit", this.text);
+      }
+
+      this.image = ""
       this.text = "";
     },
-    textAreaFocus(){
+
+    textAreaFocus() {
       this.$emit("textAreaFocus");
+    },
+
+    getFile(ev) {
+      const file = ev.target.files[0];
+
+      let metadata = {
+        contentType: file.type,
+        size: file.size
+      };
+
+      const reader = new FileReader();
+
+      reader.onload = async e => {
+        this.image = {
+          file: new Uint8Array(e.target.result),
+          metadata: metadata
+        };
+      };
+      reader.readAsArrayBuffer(file);
     }
   }
 };
@@ -94,4 +135,10 @@ export default {
     .icon
       cursor: pointer
       font-size: 1.2rem
+
+  &__upload-image
+    padding: 0 5px
+    // .file .icon
+    //   cursor: pointer
+    //   // font-size: 1.2rem
 </style>

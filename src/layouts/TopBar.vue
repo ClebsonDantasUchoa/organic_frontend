@@ -42,7 +42,7 @@
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <div class="top-bar__search__results">
+      <!-- <div class="top-bar__search__results">
         <div class="top-bar__search__users">
           <figure class="top-bar__search__users__avatar image is-48x48">
             <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
@@ -66,7 +66,7 @@
             <button class="button--follow button is-small">Seguir</button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
