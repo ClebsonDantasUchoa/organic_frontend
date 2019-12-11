@@ -8,9 +8,9 @@
       <div  class="alert alert-danger"></div>
       <div class="field">
         <p class="control has-icons-left has-icons-right">
-          <input 
-            class="input border-input" 
-            type="text" 
+          <input
+            class="input border-input"
+            type="text"
             placeholder="Nome"
             v-model="form.name"
           />
@@ -55,9 +55,9 @@
       <div class="field">
         <p class="control has-icons-left">
           <input
-            id="passwordConfirmation" 
-            class="input border-input password-confirmation" 
-            type="password" 
+            id="passwordConfirmation"
+            class="input border-input password-confirmation"
+            type="password"
             placeholder="Confirmar senha"
             v-model="form.password"
           />
@@ -67,7 +67,7 @@
         </p>
       </div>
 
-      <div class="button is-success is-rounded" :class="{'is-loading': loading}" @click="submit">Registrar-se</div>      
+      <div class="button is-success is-rounded" :class="{'is-loading': loading}" @click="submit">Registrar-se</div>
       <article class="message is-danger">
         <div v-if="error" class="message-body">{{error}}</div>
       </article>
@@ -130,18 +130,13 @@ export default {
       },
       async saveUserData(uid){
         await db.collection("users").doc(uid).set({
+          _id: uid,
           created: new Date(),
           description: this.form.description,
           email: this.form.email,
           followers: 0,
           following: 0,
           name: this.form.name
-        })
-        .then(function() {
-          db.collection("users").doc(uid).update({
-            _id: uid
-          })
-          console.log("User created with ID: ", uid);
         })
         .catch(function(error) {
           console.error("Error adding User: ", error);

@@ -64,8 +64,8 @@ export default {
       //   }
       // };
 
-      let uid = localStorage.getItem("uid")
-      if(uid == null) return
+      let uid = localStorage.getItem("uid");
+      if (uid == null) return;
 
       let post = {
         _id: uuuid(),
@@ -91,7 +91,8 @@ export default {
       post["comments"] = {
         total: 0,
         available: []
-      }
+      };
+
       this.$store.dispatch("timeline/publishContent", post);
     },
     async getPost(postId) {
@@ -116,7 +117,25 @@ export default {
   },
 
   mounted() {
-    // this.postList = this.posts;
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "xpbaDfkP1IcBZoLdEcDkTkkEGO22",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
+
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // });
+
+    // this.$store.dispatch("user/followSomeone", {
+    //   user_following: "FZjsDiW3U03j21Ap7QjT",
+    //   uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    // })
+
+    this.$store.dispatch("user/unfollowSomeone", {
+      user_unfollowing: "TZCyrHOClAen1Q1G1i55HXi4vg62",
+      uid: "JIeOivfQvfUZwFNEkyeM7XeLh8i2"
+    })
   }
 };
 </script>

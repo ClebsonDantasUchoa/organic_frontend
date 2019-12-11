@@ -28,10 +28,35 @@
 
     <div class="top-bar__search tile is-child is-3">
       <div class="control has-icons-right">
-        <input class="input" type="email" placeholder="Pesquisar" />
+        <input class="input" type="email" placeholder="Buscar usuários" />
         <span class="icon is-small is-right">
           <i class="fas fa-search"></i>
         </span>
+      </div>
+      <div class="top-bar__search__results">
+        <div class="top-bar__search__users">
+          <figure class="top-bar__search__users__avatar image is-48x48">
+            <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
+          </figure>
+          <div class="top-bar__search__users__info">
+            <p>Fulano</p>
+          </div>
+          <div class="top-bar__search__users__button">
+            <button class="button--unfollow button is-small is-success">Desseguir</button>
+          </div>
+        </div>
+
+        <div class="top-bar__search__users">
+          <figure class="top-bar__search__users__avatar image is-48x48">
+            <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
+          </figure>
+          <div class="top-bar__search__users__info">
+            <p>Fulano</p>
+          </div>
+          <div class="top-bar__search__users__button">
+            <button class="button--follow button is-small">Seguir</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -39,6 +64,12 @@
 
 <script>
 export default {
+  data() {
+    return {
+      uid: ""
+    }
+  },
+
   methods: {
     pushRoute(path) {
       if (this.$route.path !== path) this.$router.push(path);
@@ -96,6 +127,8 @@ export default {
 
   &__search
     padding-top: 7px
+    position: relative
+
     .control
       margin: 0 auto
       width: 85%
@@ -109,6 +142,39 @@ export default {
 
       span
         color: $light-green
+
+    &__results
+      width: 100%
+      position: absolute
+
+    &__users
+      background-color: $whitesmoke
+      padding: 5px
+      display: flex
+      align-items: center
+      justify-content: space-between
+      border-radius: 5px
+      margin: 3px auto
+      width: 85%
+      height: 50px
+
+      &__info
+        width: 50%
+
+        p
+          cursor: pointer
+
+      &__button
+
+        .button
+          width: 70px
+
+        .button--follow
+          background-color: $greenish-gray
+          color: white
+
+        .button--unfollow
+          background-color: #fa7268
 
     +md
       display: none
