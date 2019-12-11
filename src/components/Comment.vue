@@ -3,7 +3,8 @@
     <div class="user-interactions__comments__content">
       <div class="user-interactions__comments__avatar">
         <figure class="image is-48x48">
-          <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
+          <img v-if="comment.author.profileImg" class="myPic" :src="comment.author.profileImg" />
+          <img v-else class="myPic" src="../assets/user.png" />
         </figure>
       </div>
 
@@ -25,36 +26,39 @@
 </template>
 
 <script>
-import TimeAgo from 'javascript-time-ago'
-import pt from 'javascript-time-ago/locale/pt'
+import TimeAgo from "javascript-time-ago";
+import pt from "javascript-time-ago/locale/pt";
 
 export default {
-
-    props: {
-        comment: {
-            type: Object,
-            required: true
-        }
-    },
-    methods: {
-        convertDateInTimeAgo(date){
-        TimeAgo.addLocale(pt);
-        const timeAgo = new TimeAgo('pt-BR')
-
-        return timeAgo.format(date)
-        }
-    },
-    data() {
-        return {
-
-        }
+  props: {
+    comment: {
+      type: Object,
+      required: true
     }
+  },
+  methods: {
+    convertDateInTimeAgo(date) {
+      TimeAgo.addLocale(pt);
+      const timeAgo = new TimeAgo("pt-BR");
+
+      return timeAgo.format(date);
+    }
+  },
+  data() {
+    return {};
+  }
 };
 </script>
 
 <style lang="sass" scoped>
 @import "../assets/css/mixins"
 @import "../assets/css/variables"
+
+.myPic
+  height: 48px
+  width: 48px
+  border-radius: 100%
+  object-fit: cover
 
 .user-interactions
   &__comments
