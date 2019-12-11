@@ -19,7 +19,7 @@
     </div>
 
     <div class="post-card__interactions">
-      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes.length" :comments="post.comments" />
+      <UserInteractions :post_image="post.postImage" :post_id="post._id" :likes="post.likes.length"  />
 
       <!-- <button class="button is-success is-outlined">Curtir</button> -->
       <!-- <button class="button is-success" @click="setModalVisibilty">Comentar</button> -->
@@ -66,12 +66,13 @@ export default {
       this.showModal = !this.showModal;
     },
 
-    convertDateInTimeAgo(date){
+    convertDateInTimeAgo(date) {
       TimeAgo.addLocale(pt);
-      const timeAgo = new TimeAgo('pt-BR')
+      const timeAgo = new TimeAgo("pt-BR");
 
-      return timeAgo.format(date)
-    }
+      return timeAgo.format(date);
+    },
+
   }
 };
 </script>
