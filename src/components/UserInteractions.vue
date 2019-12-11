@@ -128,8 +128,8 @@ export default {
       let userRef = await db.collection("user").doc(localStorage.getItem("uid"))
       if(this.liked===true){
         this.liked = false
-        //await db.collection("post").doc(this.post_id).update({
-        await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
+        await db.collection("post").doc(this.post_id).update({
+        // await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
           likes: firebase.firestore.FieldValue.arrayRemove(userRef)
         }).then(() => {
           this.liked = false;
@@ -141,8 +141,8 @@ export default {
       }
       else{
         this.liked = true;
-        //await db.collection("post").doc(this.post_id).update({
-        await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
+        await db.collection("post").doc(this.post_id).update({
+        // await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
           likes: firebase.firestore.FieldValue.arrayUnion(userRef)
         }).then(() => {
           this.liked = true;
