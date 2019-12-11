@@ -106,11 +106,10 @@ export default {
         console.log("Error to logout", error)
       });
     },
-    
+
     activeProfileIcon(path) {
       if (`/${this.$route.path.split("/")[1]}` === path) return true;
       return false;
-
     }
   }
 };

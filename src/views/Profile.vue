@@ -1,33 +1,49 @@
 <template>
   <div class="content" v-if="profile">
     <Modal @close="closeFollowerModal" :isActive="modalFollower">
-      <div v-for="(follower, key) in followers" :key="key" class="relationshipsInfo">
-        <figure class="image is-48x48">
-          <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
-        </figure>
-        <p class="followerName">{{follower.name}}</p>
-        <button class="button is-small" v-if="!follower.isFollowed">Seguir</button>
+      <div class="followersList" v-if="followersList.length">
+        <div v-for="(follower, key) in followersList" :key="key" class="relationshipsInfo">
+          <figure class="image is-48x48">
+            <img v-if="follower.profileImg" class="is-rounded" :src="follower.profileImg" />
+            <img v-else class="is-rounded" src="../assets/user.png" />
+          </figure>
+          <p class="followerName" @click="redirectToAnotherProfile(follower._id)">{{follower.name}}</p>
+        </div>
+      </div>
+      <div v-else>
+        <p class="has-text-centered">Lista Vazia</p>
       </div>
     </Modal>
 
     <Modal @close="closeFollowingModal" :isActive="modalFollowing">
-      <div class="tile is-ancestor">
-        <div class="tile is-parent">
-          <div class="tile is-child">
-            <div v-for="(following, key) in following" :key="key" class="relationshipsInfo">
-              <figure class="image is-48x48">
-                <!-- <img class="is-rounded" src="https://thispersondoesnotexist.com/image" /> -->
-                <img class="is-rounded" src="../assets/user.png" />
-              </figure>
-              <p>{{following.name}}</p>
-            </div>
-          </div>
+      <div v-if="followingList.length">
+        <div v-for="(following, key) in followingList" :key="key" class="relationshipsInfo">
+          <figure class="image is-48x48">
+            <img v-if="following.profileImg" class="is-rounded" :src="following.profileImg" />
+            <img v-else class="is-rounded" src="../assets/user.png" />
+          </figure>
+          <p
+            class="followerName"
+            @click="redirectToAnotherProfile(following._id)"
+          >{{following.name}}</p>
         </div>
+      </div>
+      <div v-else>
+        <p class="has-text-centered">Lista Vazia</p>
       </div>
     </Modal>
 
-    <img v-if="profile.profileImg" class="profileImg" :src="profile.profileImg" />
-    <img v-else class="profileImg" src="../assets/user.png" />
+    <div class="file">
+      <img v-if="profile.profileImg" class="profileImg" :src="profile.profileImg" />
+      <img v-else class="profileImg" src="../assets/user.png" />
+      <input
+        v-if="uid === profileUid"
+        class="file-input"
+        type="file"
+        name="sheet"
+        @change="getFile"
+      />
+    </div>
 
     <div class="about">
       <h2 class="name">{{profile.name}}</h2>
@@ -44,7 +60,7 @@
           class="button--unfollow button is-small"
           :class="{'is-loading': loading}"
           @click="unfollow"
-        >Desseguir</button>
+        >Deixar de Seguir</button>
       </div>
 
       <p class="description">{{profile.description}}</p>
@@ -77,23 +93,16 @@ export default {
       profileUid: "",
       loading: false,
       modalFollower: false,
-      modalFollowing: false,
-      followers: [
-        {
-          name: "Samuel Albuquerque",
-          isFollowed: true
-        }
-      ],
-      following: [
-        {
-          name: "Justin"
-        }
-      ]
+      modalFollowing: false
     };
   },
 
   methods: {
     openFollowerModal() {
+      this.$store.dispatch(
+        "search/findFollowers",
+        this.profile.userFollow.followers
+      );
       this.modalFollower = true;
     },
     closeFollowerModal() {
@@ -101,6 +110,10 @@ export default {
     },
 
     openFollowingModal() {
+      this.$store.dispatch(
+        "search/findFollowing",
+        this.profile.userFollow.following
+      );
       this.modalFollowing = true;
     },
     closeFollowingModal() {
@@ -113,8 +126,6 @@ export default {
         user_following: this.profileUid,
         uid: this.uid
       });
-
-      // this.loading = false;
     },
 
     async unfollow() {
@@ -123,15 +134,39 @@ export default {
         user_unfollowing: this.profileUid,
         uid: this.uid
       });
+    },
 
-      // this.loading = false;
+    redirectToAnotherProfile(uid) {
+      this.$router.push(`/profile/${uid}`);
+      this.closeFollowerModal();
+      this.closeFollowingModal();
     },
 
     searchUsers() {
       this.profileUid = this.$route.path.split("/profile/")[1];
       this.$store.dispatch("search/searchUserProfile", this.profileUid);
-      if (this.profileUid !== this.uid)
-        this.$store.dispatch("user/findLoggedUserProfile", this.uid);
+      // if (this.profileUid !== this.uid)
+      this.$store.dispatch("user/findLoggedUserProfile", this.uid);
+    },
+
+    getFile(ev) {
+      const file = ev.target.files[0];
+
+      let metadata = {
+        contentType: file.type,
+        size: file.size
+      };
+
+      const reader = new FileReader();
+
+      reader.onload = async e => {
+        this.$store.dispatch("user/updateProfilePicture", {
+          uid: this.uid,
+          file: new Uint8Array(e.target.result),
+          metadata: metadata
+        });
+      };
+      reader.readAsArrayBuffer(file);
     }
   },
 
@@ -157,13 +192,17 @@ export default {
     },
 
     profile() {
+      console.log(this.uid === this.profileUid);
+      console.log(this.loggedUser, this.searchedUser);
       if (this.uid === this.profileUid) return this.loggedUser;
       else return this.searchedUser;
     },
 
     ...mapGetters({
       loggedUser: "user/getLoggedUserProfile",
-      searchedUser: "search/getUserProfileSearched"
+      searchedUser: "search/getUserProfileSearched",
+      followersList: "search/getFollowers",
+      followingList: "search/getFollowing"
     })
   },
 
@@ -177,24 +216,27 @@ export default {
 .relationshipsInfo {
   display: flex;
   align-items: center;
-  margin: 20px 0px;
+  margin: 10px 0px;
+  height: 50px;
 
   .followerName {
     margin: 0;
+    cursor: pointer;
   }
 
-  .button {
-    margin-left: 20px;
-  }
+  // .button {
+  //   margin-left: 20px;
+  // }
 
   figure {
     margin-right: 1em;
     margin-left: 0;
-  }
-
-  .figure:not(:last-child) {
     margin-bottom: 0;
   }
+
+  // .figure:not(:last-child) {
+  //   margin-bottom: 0;
+  // }
 }
 .content {
   margin-top: 30px;

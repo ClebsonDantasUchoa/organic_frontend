@@ -8,7 +8,6 @@
         </figure>
         <p class="userName" @click="redirectToAnotherProfile(user._id)">{{user.name}}</p>
       </div>
-      <button class="button is-small">Seguir</button>
     </div>
   </div>
 </template>

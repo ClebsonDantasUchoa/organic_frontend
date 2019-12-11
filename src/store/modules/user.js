@@ -57,16 +57,6 @@ const actions = {
           commit("set_profile", data)
         })
       })
-
-    // .get()
-    // .then(async doc => {
-    //   let data = doc.data()
-
-    //   await data.userFollow.get().then(uFollow => {
-    //     data["userFollow"] = uFollow.data()
-    //     commit("set_profile", data)
-    //   })
-    // })
   },
 
   // eslint-disable-next-line no-unused-vars
@@ -101,6 +91,31 @@ const actions = {
       .catch(e => {
         console.log(e.message)
       })
+  },
+
+  updateProfilePicture({ dispatch }, payload) {
+    let storageRef = firebase
+      .storage()
+      .ref("users/")
+      .child(payload.uid)
+      .child("avatar/")
+
+    storageRef.put(payload.file, payload.metadata).then(function() {
+      storageRef.getDownloadURL().then(response => {
+        let url = response
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(payload.uid)
+          .update({
+            profileImg: url
+          })
+      })
+    })
+
+    // var mountainImagesRef = storageRef.child('images/mountains.jpg');
+
+    dispatch("findLoggedUserProfile", payload.uid)
   }
 }
 
