@@ -45,18 +45,16 @@ export default {
 
       let post = {
         _id: uuuid(),
-        autorImage: "",
-        autor: localStorage.getItem("uname"),
         user_id: uid,
         postImage: "",
+        author: "",
         message: content.text,
         event_date: new Date(),
-        likes: []
+        likes: [],
+        comments: []
       };
 
       if (content.image) {
-        console.log(content);
-
         let ref = storage
           .ref("posts/")
           .child(post._id)
@@ -71,6 +69,9 @@ export default {
           });
       }
 
+      post["author"] = db.collection("users").doc(uid);
+
+
       db.collection("post")
         .doc(post._id)
         .set(post)
@@ -78,13 +79,6 @@ export default {
         .catch(function(error) {
           console.error("Error adding Post: ", error);
         });
-
-      // post["comments"] = {
-      //   total: 0,
-      //   available: []
-      // };
-
-      // this.$store.dispatch("timeline/publishContent", post);
     },
 
     async getPost(postId) {

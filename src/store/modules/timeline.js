@@ -57,14 +57,19 @@ const actions = {
             db.collection("post")
               .doc(post_id)
               .get()
-              .then(doc => {
+              .then(async doc => {
                 let data = doc.data()
-                data["event_date"] = new Date(
-                  data["event_date"].seconds * 1000
-                ).toISOString()
+
+                await data.author.get().then(author => {
+                  data["author"] = author.data()
+                })
+
+                let date = new Date(data["event_date"].seconds * 1000)
+                data["event_date"] = date.toISOString()
                 posts.push(data)
               })
           })
+console.log(posts)
         commit("setTimelinePosts", posts)
       })
   }
