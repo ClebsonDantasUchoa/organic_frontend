@@ -17,9 +17,9 @@
         <i class="fas fa-comments" @click="pushRoute('/chat')"></i>
       </div>-->
 
-      <span class="icon" :class="{'icon--active': activeIcon('/store')}">
+      <!-- <span class="icon" :class="{'icon--active': activeIcon('/store')}">
         <i class="fas fa-store" @click="pushRoute('/store')"></i>
-      </span>
+      </span> -->
 
       <div class="icon" :class="{'icon--active': activeIcon('/notifications')}">
         <i class="fas fa-bell" @click="pushRoute('/notifications')"></i>
@@ -28,6 +28,11 @@
       <div class="icon" :class="{'icon--active': activeProfileIcon('/profile')}">
         <i class="fa fa-user-circle" @click="pushUserProfile"></i>
       </div>
+
+      <span class="icon" :class="{'icon--active': activeIcon('/logout')}">
+        <i class="fas fa-sign-out-alt" @click="logout"></i>
+      </span>
+
     </div>
 
     <div class="top-bar__search tile is-child is-3">
@@ -67,6 +72,9 @@
 </template>
 
 <script>
+
+import firebase from 'firebase';
+
 export default {
   data() {
     return {
@@ -90,9 +98,19 @@ export default {
       return false;
     },
 
+    logout(){
+      firebase.auth().signOut().then(() => {
+        localStorage.clear()
+        this.pushRoute('/login')
+      }, function(error) {
+        console.log("Error to logout", error)
+      });
+    },
+    
     activeProfileIcon(path) {
       if (`/${this.$route.path.split("/")[1]}` === path) return true;
       return false;
+
     }
   }
 };
