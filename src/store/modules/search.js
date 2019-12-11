@@ -1,42 +1,33 @@
+import firebase from "firebase"
+
 const state = {
-  users: [
-    {
-      _id: "Zsbb6hL2e2UQ0NcUOaue8af9CZl1",
-      created: new Date(),
-      description: "qqqqq",
-      email: "aaaa@aaaa.com",
-      followers: 1,
-      following: 0,
-      timeline: "",
-      userFollow: [],
-      name: "Fulano 1"
-    },
-    {
-      _id: "Ssbb6hL2e2uhjdsiu$Oaue8af9CAb4",
-      created: new Date(),
-      description: "qqqqq",
-      email: "a@aaaa.com",
-      followers: 1,
-      following: 0,
-      timeline: "",
-      userFollow: [],
-      name: "Fulano 1"
-    }
-  ]
+  usersSearched: [],
+  userProfileSearched: null
 }
 
-const mutations = {}
+const mutations = {
+  setUserProfileSearched: (state, payload) => {
+    state.userProfileSearched = payload
+  }
+}
 
 const actions = {
-  // searchUsers({commit}, payload) {
-  //   let db = firebase.firestore()
+  async searchUserProfile({ commit }, uid) {
+    let db = firebase.firestore()
 
-  //   db.collection("users")
-  // }
+    await db
+      .collection("users")
+      .doc(uid)
+      .get()
+      .then(doc => {
+        commit("setUserProfileSearched", doc.data())
+      })
+  }
 }
 
 const getters = {
-  getUsers: state => state.users
+  getUsers: state => state.users,
+  getUserProfileSearched: state => state.userProfileSearched
 }
 
 export default {

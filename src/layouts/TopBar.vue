@@ -25,8 +25,8 @@
         <i class="fas fa-bell" @click="pushRoute('/notifications')"></i>
       </div>
 
-      <div class="icon" :class="{'icon--active': activeIcon('/profile')}">
-        <i class="fa fa-user-circle" @click="pushRoute('/profile')"></i>
+      <div class="icon" :class="{'icon--active': activeProfileIcon('/profile')}">
+        <i class="fa fa-user-circle" @click="pushUserProfile"></i>
       </div>
 
       <span class="icon" :class="{'icon--active': activeIcon('/logout')}">
@@ -79,12 +79,18 @@ export default {
   data() {
     return {
       uid: ""
-    }
+    };
   },
 
   methods: {
     pushRoute(path) {
       if (this.$route.path !== path) this.$router.push(path);
+    },
+
+    pushUserProfile(path) {
+      let uid = localStorage.getItem("uid");
+      console.log(`/profile/${uid}`)
+      if (this.$route.path !== path) this.$router.push(`/profile/${uid}`);
     },
 
     activeIcon(path) {
@@ -99,6 +105,12 @@ export default {
       }, function(error) {
         console.log("Error to logout", error)
       });
+    },
+    
+    activeProfileIcon(path) {
+      if (`/${this.$route.path.split("/")[1]}` === path) return true;
+      return false;
+
     }
   }
 };

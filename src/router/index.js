@@ -40,7 +40,7 @@ const routes = [
         component: () => import("../views/Notifications"),
       },
       {
-        path: '/profile',
+        path: '/profile/:user',
         name: 'profile',
         component: () => import('../views/Profile.vue')
       }
