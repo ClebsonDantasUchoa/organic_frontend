@@ -9,9 +9,9 @@
         </div>
         <div class="tile is-parent">
           <div class="tile is-child">
-            <div v-for="(comment, key) in comments.available" :key="key">
+            <!-- <div v-for="(comment, key) in comments.available" :key="key">
               <Comment :comment="comment"></Comment>
-            </div>
+            </div> -->
             <PostInput placeholder="Escreva um comentário..." @submit="publishComment" />
           </div>
         </div>
@@ -27,12 +27,12 @@
       <div class="icon">
         <i class="far fa-comment"></i>
       </div>
-      {{comments.total}}
+      <!-- {{comments.total}} -->
     </div>
     
-    <div v-if="comments.available.length">
+    <!-- <div v-if="comments.available.length">
       <Comment :comment="comments.available[0]"></Comment>
-    </div>
+    </div> -->
 
     <div class="user-interactions__post-input">
       <PostInput
@@ -47,13 +47,13 @@
 <script>
 import PostInput from "@/components/PostInput";
 import Modal from "@/components/Modal";
-import Comment from "@/components/Comment";
+// import Comment from "@/components/Comment";
 import firebase from "firebase";
 let db = firebase.firestore()
 
 export default {
   components: {
-    Comment,
+    // Comment,
     Modal,
     PostInput
   },
@@ -67,10 +67,10 @@ export default {
       type: Number,
       required: true
     },
-    comments: {
-      type: Object,
-      required: true
-    },
+    // comments: {
+    //   type: Object,
+    //   required: true
+    // },
     post_image: {
       type: String,
       default: ""

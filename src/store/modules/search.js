@@ -1,7 +1,7 @@
 import firebase from "firebase"
 
 const state = {
-  community: []
+  community: [],
   userProfileSearched: null
 }
 
@@ -45,11 +45,12 @@ const actions = {
       commit("setCommunity", users)
     });
   }
+
 }
 
 const getters = {
-  getCommunity: state => state.community
-  getUserProfileSearched: state => state.userProfileSearched
+  getCommunity: state => state.community,
+  getUserProfileSearched: state => state.userProfileSearched,
 }
 
 export default {

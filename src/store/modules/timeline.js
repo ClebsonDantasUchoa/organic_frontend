@@ -1,4 +1,7 @@
+import firebase from "firebase"
+
 const state = {
+  timelinePosts: [],
   posts: [
     {
       _id: "1",
@@ -63,6 +66,10 @@ const mutations = {
     post.comments.available.push(payload)
     post.comments.total += 1
     console.log(state.posts)
+  },
+
+  setTimelinePosts: (state, payload) => {
+    state.timelinePosts = payload
   }
 }
 
@@ -74,11 +81,31 @@ const actions = {
 
   publishComment: (context, payload) => {
     context.commit("pushCommentInPosts", payload)
+  },
+
+  async searchTimelinePosts({commit}){
+    let db = firebase.firestore()
+
+    await db.collection("timeline")
+    .doc(localStorage.getItem("uid"))
+    .onSnapshot(
+      function (snapshot) {
+        let posts = []
+        snapshot.data().posts.forEach(function(post) {
+          let post_id = post.path.split("post/")[1]
+          db.collection("post").doc(post_id).get().then(doc => {
+            posts.push(doc.data())
+          })
+        });
+        commit("setTimelinePosts", posts)
+      }
+    )
   }
 }
 
 const getters = {
-  getPosts: state => state.posts
+  getPosts: state => state.posts,
+  getTimelinePosts: state => state.timelinePosts
 }
 
 export default {
