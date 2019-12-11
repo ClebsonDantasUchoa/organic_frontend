@@ -31,7 +31,6 @@ const actions = {
                 users.push(data)
               })
           })
-          console.log(users)
           commit("setUsersWhoLiked", users)
       })
   }

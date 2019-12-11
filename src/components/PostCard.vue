@@ -31,7 +31,7 @@
       <UserInteractions
         :post_image="post.postImage"
         :post_id="post._id"
-        :likes="post.likes.length"
+        :likes="post.likes"
       />
     </div>
   </div>

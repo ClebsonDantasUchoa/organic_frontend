@@ -17,9 +17,13 @@ const mutations = {
   },
 
   pushLikeInPosts: (state, payload) => {
-    let post = state.posts.filter(post => post._id === payload.post_id)[0]
-    post.likes += 1
-    console.log(state.posts)
+    let post = state.timelinePosts.filter(post => post._id === payload.post_id)[0]
+    post.likes.push(payload.userRef)
+  },
+
+  popLikeInPosts: (state, payload) => {
+    let post = state.timelinePosts.filter(post => post._id === payload.post_id)[0]
+    post.likes = post.likes.filter(a => a.path !== payload.userRef.path)
   },
 
   setTimelinePosts: (state, payload) => {
@@ -28,11 +32,6 @@ const mutations = {
 }
 
 const actions = {
-  // publishContent: (context, payload) => {
-  //   console.log(payload)
-  //   context.commit("pushPosts", payload)
-  // },
-
   publishComment: (context, payload) => {
     context.commit("pushCommentInPosts", payload)
   },
