@@ -16,23 +16,33 @@
           </div>
         </div>
       </div>
-      
+    </Modal>
+
+    <Modal @close="closeLikeModal" :isActive="modalLike">
+      <div v-for="(user, key) in usersWhoLiked" :key="key" class="usersWhoLikedInfo">
+        <figure class="image is-48x48">
+          <img class="my-img" v-if="user.profileImg" :src="user.profileImg">
+          <img v-else src="../assets/user.png" alt="Avatar">
+        </figure>
+        <p>{{ user.name }}</p>
+      </div>
     </Modal>
 
     <div class="user-interactions__buttons">
       <div class="icon" @click="postRating" :class="{'icon--liked':liked}">
         <i class="fab fa-gratipay"></i>
       </div>
-      {{likes}}
+      {{likes.length}}
+      <span @click="openLikeModal">pessoas que curtiram</span>
       <div class="icon" @click="openCommentModal">
         <i class="far fa-comment"></i>
       </div>
       {{comments.available.length}}
     </div>
-    
+
     <!-- <div v-if="comments.available.length">
       <Comment :comment="comments.available[0]"></Comment>
-    </div> -->
+    </div>-->
 
     <div class="user-interactions__post-input">
       <PostInput
@@ -47,6 +57,7 @@
 <script>
 import PostInput from "@/components/PostInput";
 import Modal from "@/components/Modal";
+import { mapGetters } from "vuex";
 import Comment from "@/components/Comment";
 import firebase from "firebase";
 let db = firebase.firestore()
@@ -64,7 +75,7 @@ export default {
       required: true
     },
     likes: {
-      type: Number,
+      type: Array,
       required: true
     },
     // comments: {
@@ -78,24 +89,38 @@ export default {
   },
   data() {
     return {
+      uid: localStorage.getItem("uid"),
       modalComment: false,
       liked: false,
+      modalLike: false,
       comments: {
         available: []
       }
     };
   },
-  methods: {
-    publishComment(text) {
-      // let comment = {
-      //   _id: "12",
-      //   post_id: this.post_id,
-      //   author: { name: "Michael Grubs" },
-      //   text: text,
-      //   event_date: new Date(),
-      //   likes: 0
-      // };
 
+  watch: {
+    usersWhoLiked() {
+      this.isLiked()
+   } 
+ },
+
+  computed: {
+    ...mapGetters({
+      usersWhoLiked: "post/getUsersWhoLikedList",
+    })
+  },
+
+  methods: {
+    isLiked() {
+        let usersWhoLiked = this.likes.map(
+          user => user.path.split("user/")[1]
+        );
+
+        this.liked = usersWhoLiked.includes(this.uid);
+    },
+    
+    publishComment(text) {
       let comment = {
         post_id: this.post_id,
         author: { name: localStorage.getItem("uname")},
@@ -149,10 +174,10 @@ export default {
       if(this.liked===true){
         this.liked = false
         await db.collection("post").doc(this.post_id).update({
-        // await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
           likes: firebase.firestore.FieldValue.arrayRemove(userRef)
         }).then(() => {
           this.liked = false;
+          this.$store.commit("timeline/popLikeInPosts", {post_id: this.post_id, userRef: userRef});
         })
         .catch(e => {
           console.log("Error to like: ", e.message)
@@ -162,9 +187,9 @@ export default {
       else{
         this.liked = true;
         await db.collection("post").doc(this.post_id).update({
-        // await db.collection("post").doc("SNdC3ruoirxDWKla3Za7").update({
           likes: firebase.firestore.FieldValue.arrayUnion(userRef)
         }).then(() => {
+          this.$store.commit("timeline/pushLikeInPosts", {post_id: this.post_id, userRef: userRef});
           this.liked = true;
           this.$emit("liked");
         }).catch(e => {
@@ -172,15 +197,38 @@ export default {
           console.log("Error to unlike: ", e.message)
         })
       }
-    }
+    },
+
+    openLikeModal() {
+      this.$store.dispatch("post/searchUsersWhoLiked", this.post_id);
+      this.modalLike = true;
+    },
+
+    closeLikeModal() {
+      this.modalLike = false;
+    },
+  },
+
+  mounted() {
+    this.isLiked()
   }
 };
 </script>
 
 <style lang="sass" scoped>
 @import "../assets/css/mixins"
+.my-img
+  height: 48px
+  width: 48px
+  border-radius: 100%
+  object-fit: cover
 
 .user-interactions
+
+  .usersWhoLikedInfo
+    display: flex
+    align-items: center
+
   .post-img
     border-radius: 5px
 

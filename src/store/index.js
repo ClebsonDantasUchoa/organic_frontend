@@ -8,6 +8,7 @@ firebase.initializeApp(config)
 import timeline from "@/store/modules/timeline"
 import user from "@/store/modules/user"
 import search from "@/store/modules/search"
+import post from "@/store/modules/post"
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
   modules: {
     timeline,
     user,
-    search
+    search,
+    post
   }
 })
 
