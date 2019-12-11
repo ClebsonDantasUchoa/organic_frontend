@@ -6,7 +6,7 @@
         <figure class="image is-48x48">
           <img class="is-rounded" src="https://thispersondoesnotexist.com/image" />
         </figure>
-        <p class="userName">{{user.name}}</p>
+        <p class="userName" @click="redirectToAnotherProfile(user._id)">{{user.name}}</p>
       </div>
       <button class="button is-small">Seguir</button>
     </div>
@@ -31,7 +31,11 @@ export default {
     this.$store.dispatch("search/searchCommunity");
   },
 
-  methods: {}
+  methods: {
+    redirectToAnotherProfile(uid){
+      this.$router.push(`/profile/${uid}`);
+    }
+  }
 };
 </script>
 
@@ -47,6 +51,7 @@ export default {
 
   .userName {
     margin: 0;
+    cursor: pointer;
   }
 
   .button {

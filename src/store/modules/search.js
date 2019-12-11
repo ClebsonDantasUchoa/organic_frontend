@@ -35,8 +35,8 @@ const actions = {
     await db.collection("users").get().then(function(querySnapshot) {
       let users = []
       querySnapshot.forEach(function(doc) {
-          users.push(doc.data())
-          //console.log(doc.id, " => ", doc.data());
+        users.push(doc.data())
+        //console.log(doc.id, " => ", doc.data());
       });
       commit("setCommunity", users)
     });
